@@ -5,22 +5,12 @@ engineType = "binary"
 
 datasource db {
 provider = "sqlite"
+url = "file:./dev.db"
 }
 
 model Task {
 id String @id @default(cuid())
 title String
-createdAt DateTime @default(now())
-}
-
-model Project {
-id String @id @default(cuid())
-name String
-createdAt DateTime @default(now())
-}
-
-model Memory {
-id String @id @default(cuid())
-content String
+status String @default("pending")
 createdAt DateTime @default(now())
 }
