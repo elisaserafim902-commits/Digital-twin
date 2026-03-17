@@ -5,7 +5,6 @@ engineType = "binary"
 
 datasource db {
 provider = "sqlite"
-url = "file:./dev.db"
 }
 
 model Task {
