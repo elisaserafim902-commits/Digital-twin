@@ -4,10 +4,9 @@
 "private": true,
 "scripts": {
 "dev": "next dev",
-"build": "next build",
+"build": "prisma generate && next build",
 "start": "next start",
-"lint": "eslint .",
-
+"lint": "eslint ."
 },
 "dependencies": {
 "@prisma/client": "^7.5.0",
@@ -27,5 +26,8 @@
 "postcss": "^8",
 "tailwindcss": "^4",
 "typescript": "^5"
+},
+"prisma": {
+"schema": "prisma/schema.prisma"
 }
 }
