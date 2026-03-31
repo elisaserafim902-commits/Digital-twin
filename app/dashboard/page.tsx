@@ -8,10 +8,7 @@ const router = useRouter()
 
 useEffect(() => {
 const user = localStorage.getItem("user")
-
-if (!user) {
-router.push("/")
-}
+if (!user) router.push("/")
 }, [])
 
 function sair() {
@@ -20,11 +17,35 @@ router.push("/")
 }
 
 return (
-<div style={{ padding: 40 }}>
-<h1>📊 Dashboard</h1>
-<p>Você está logado no sistema</p>
+<div style={{
+minHeight: "100vh",
+background: "#0f172a",
+color: "#fff",
+padding: 40
+}}>
+<h1 style={{ fontSize: 28 }}>📊 Dashboard</h1>
 
-<button onClick={sair}>
+<div style={{
+marginTop: 20,
+padding: 20,
+background: "#1e293b",
+borderRadius: 10
+}}>
+<p>Sistema ativo e funcionando</p>
+</div>
+
+<button
+onClick={sair}
+style={{
+marginTop: 20,
+padding: "10px 20px",
+background: "#ef4444",
+color: "#fff",
+border: "none",
+borderRadius: 6,
+cursor: "pointer"
+}}
+>
 Sair
 </button>
 </div>
