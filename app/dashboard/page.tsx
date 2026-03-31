@@ -1,15 +1,22 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 export default function Dashboard() {
 const router = useRouter()
+const [loading, setLoading] = useState(true)
 
 useEffect(() => {
+try {
 const user = localStorage.getItem("user")
 
 if (!user) {
+router.push("/")
+} else {
+setLoading(false)
+}
+} catch (error) {
 router.push("/")
 }
 }, [router])
@@ -19,52 +26,47 @@ localStorage.removeItem("user")
 router.push("/")
 }
 
-return (
-<div style={container}>
-<div style={card}>
-<h1 style={title}>Dashboard</h1>
-<p style={subtitle}>Você está logado com sucesso</p>
-
-<button onClick={logout} style={button}>
-Sair
-</button>
-</div>
-</div>
-)
+if (loading) {
+return <p>Carregando...</p>
 }
 
-const container = {
+return (
+<div
+style={{
 display: "flex",
 alignItems: "center",
 justifyContent: "center",
 height: "100vh",
 background: "#f4f6f8",
-}
-
-const card = {
+}}
+>
+<div
+style={{
 background: "#fff",
 padding: "40px",
 borderRadius: "12px",
 boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-textAlign: "center" as const,
-width: "300px",
-}
+textAlign: "center",
+}}
+>
+<h1>Dashboard</h1>
+<p>Você está logado</p>
 
-const title = {
-marginBottom: "10px",
-}
-
-const subtitle = {
-color: "#666",
-marginBottom: "20px",
-}
-
-const button = {
+<button
+onClick={logout}
+style={{
 padding: "12px",
-width: "100%",
+marginTop: 20,
 background: "#ff4d4f",
 color: "#fff",
 border: "none",
 borderRadius: "8px",
 cursor: "pointer",
+}}
+>
+Sair
+</button>
+</div>
+</div>
+)
 }
