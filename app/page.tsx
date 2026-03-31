@@ -1,24 +1,18 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
 
 export default function Home() {
 const router = useRouter()
-const [ready, setReady] = useState(false)
-
-useEffect(() => {
-setReady(true)
-}, [])
 
 function handleLogin() {
-if (typeof window !== "undefined") {
+try {
 localStorage.setItem("user", "logado")
 router.push("/dashboard")
+} catch (e) {
+console.error(e)
 }
 }
-
-if (!ready) return null
 
 return (
 <div style={{ padding: 40 }}>

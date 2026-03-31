@@ -1,30 +1,32 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 export default function Dashboard() {
 const router = useRouter()
-const [ready, setReady] = useState(false)
 
 useEffect(() => {
-if (typeof window !== "undefined") {
+try {
 const user = localStorage.getItem("user")
 
 if (!user) {
 router.push("/")
-} else {
-setReady(true)
 }
+} catch (e) {
+console.error(e)
+router.push("/")
 }
 }, [router])
 
 function logout() {
+try {
 localStorage.removeItem("user")
 router.push("/")
+} catch (e) {
+console.error(e)
 }
-
-if (!ready) return null
+}
 
 return (
 <div style={{ padding: 40 }}>
