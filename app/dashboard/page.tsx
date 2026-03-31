@@ -1,182 +1,70 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 
-export default function Dashboard(){
+export default function Dashboard() {
+const router = useRouter()
 
-const [strategy,setStrategy] = useState<any>(null)
+useEffect(() => {
+const user = localStorage.getItem("user")
 
-useEffect(()=>{
+if (!user) {
+router.push("/")
+}
+}, [router])
 
-fetch("/api/strategy")
-.then(res=>res.json())
-.then(data=>setStrategy(data))
+function logout() {
+localStorage.removeItem("user")
+router.push("/")
+}
 
-},[])
+return (
+<div style={container}>
+<div style={card}>
+<h1 style={title}>Dashboard</h1>
+<p style={subtitle}>Você está logado com sucesso</p>
 
-return(
-
-<div className="twin-container">
-
-<h1 className="title">
-DIGITAL TWIN CONTROL CENTER
-</h1>
-
-<p className="subtitle">
-Sistema operacional estratégico da vida
-</p>
-
-<div className="grid">
-
-<div className="card">
-<h3>Estado do Twin</h3>
-<p>Projetos ativos: {strategy?.activeProjects ?? "-"}</p>
-<p>Tarefas abertas: {strategy?.openTasks ?? "-"}</p>
-<p>Memórias: {strategy?.memories ?? "-"}</p>
+<button onClick={logout} style={button}>
+Sair
+</button>
 </div>
-
-<div className="card">
-<h3>Prioridade do Dia</h3>
-<p>{strategy?.priority ?? "analisando..."}</p>
 </div>
-
-<div className="card">
-<h3>Status Estratégico</h3>
-<p>Energia: {strategy?.energy ?? "-"}</p>
-<p>{strategy?.recommendation ?? "analisando..."}</p>
-</div>
-
-</div>
-
-<div className="radar">
-
-<h3>Radar Estratégico</h3>
-<div className="ai-radar">
-
-<div className="radar-circle">
-<div className="radar-scan"></div>
-</div>
-
-<p className="radar-text">
-Twin Brain ativo • análise estratégica em execução
-</p>
-
-</div>
-
-
-<p>
-O Digital Twin está analisando padrões da sua vida e decisões recentes.
-</p>
-
-<p className="highlight">
-Recomendação: mantenha foco no projeto principal.
-</p>
-
-</div>
-
-<style jsx>{`
-.ai-radar{
-margin-top:50px;
-display:flex;
-flex-direction:column;
-align-items:center;
-}
-
-.radar-circle{
-width:220px;
-height:220px;
-border-radius:50%;
-border:2px solid #38bdf8;
-position:relative;
-overflow:hidden;
-box-shadow:0 0 30px rgba(56,189,248,0.3);
-}
-
-.radar-scan{
-width:100%;
-height:100%;
-position:absolute;
-background:conic-gradient(
-rgba(56,189,248,0.8),
-transparent 60%
-);
-animation:radar 4s linear infinite;
-}
-
-@keyframes radar{
-from{
-transform:rotate(0deg)
-}
-to{
-transform:rotate(360deg)
-}
-}
-
-.radar-text{
-margin-top:15px;
-color:#38bdf8;
-font-size:14px;
-letter-spacing:1px;
-}
-
-.twin-container{
-min-height:100vh;
-padding:40px;
-background:radial-gradient(circle at top,#020617,#020617,#000);
-color:white;
-font-family:system-ui;
-}
-
-.title{
-font-size:30px;
-letter-spacing:2px;
-color:#38bdf8;
-margin-bottom:5px;
-}
-
-.subtitle{
-color:#94a3b8;
-margin-bottom:40px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px;
-}
-
-.card{
-background:#020617;
-border:1px solid #0ea5e9;
-padding:25px;
-border-radius:12px;
-box-shadow:0 0 25px rgba(14,165,233,0.2);
-transition:0.3s;
-}
-
-.card:hover{
-transform:scale(1.02);
-box-shadow:0 0 35px rgba(14,165,233,0.4);
-}
-
-.radar{
-margin-top:40px;
-padding:30px;
-border-radius:12px;
-border:1px solid #38bdf8;
-background:#020617;
-box-shadow:0 0 30px rgba(56,189,248,0.15);
-}
-
-.highlight{
-margin-top:10px;
-color:#22c55e;
-}
-
-`}</style>
-
-</div>
-
 )
+}
 
+const container = {
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+height: "100vh",
+background: "#f4f6f8",
+}
+
+const card = {
+background: "#fff",
+padding: "40px",
+borderRadius: "12px",
+boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+textAlign: "center" as const,
+width: "300px",
+}
+
+const title = {
+marginBottom: "10px",
+}
+
+const subtitle = {
+color: "#666",
+marginBottom: "20px",
+}
+
+const button = {
+padding: "12px",
+width: "100%",
+background: "#ff4d4f",
+color: "#fff",
+border: "none",
+borderRadius: "8px",
+cursor: "pointer",
 }
