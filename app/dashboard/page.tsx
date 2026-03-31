@@ -1,53 +1,46 @@
 "use client"
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+import Sidebar from "../components/Sidebar"
 
 export default function Dashboard() {
-const router = useRouter()
-
-useEffect(() => {
-const user = localStorage.getItem("user")
-if (!user) router.push("/")
-}, [])
-
-function sair() {
-localStorage.removeItem("user")
-router.push("/")
-}
-
 return (
+<div style={{ display: "flex" }}>
+
+<Sidebar />
+
 <div style={{
-minHeight: "100vh",
+flex: 1,
+padding: 40,
 background: "#0f172a",
 color: "#fff",
-padding: 40
+minHeight: "100vh"
 }}>
-<h1 style={{ fontSize: 28 }}>📊 Dashboard</h1>
+<h1>📊 Dashboard</h1>
 
 <div style={{
-marginTop: 20,
-padding: 20,
-background: "#1e293b",
-borderRadius: 10
+display: "grid",
+gridTemplateColumns: "repeat(3, 1fr)",
+gap: 20,
+marginTop: 20
 }}>
-<p>Sistema ativo e funcionando</p>
+
+<div style={{ background: "#1e293b", padding: 20, borderRadius: 10 }}>
+<h3>Projetos</h3>
+<p>12 ativos</p>
 </div>
 
-<button
-onClick={sair}
-style={{
-marginTop: 20,
-padding: "10px 20px",
-background: "#ef4444",
-color: "#fff",
-border: "none",
-borderRadius: 6,
-cursor: "pointer"
-}}
->
-Sair
-</button>
+<div style={{ background: "#1e293b", padding: 20, borderRadius: 10 }}>
+<h3>Insights</h3>
+<p>8 análises</p>
+</div>
+
+<div style={{ background: "#1e293b", padding: 20, borderRadius: 10 }}>
+<h3>Status</h3>
+<p>Online</p>
+</div>
+
+</div>
+</div>
 </div>
 )
 }
