@@ -5,19 +5,17 @@ import { useRouter } from "next/navigation"
 
 export default function Dashboard() {
 const router = useRouter()
-const [loading, setLoading] = useState(true)
+const [ready, setReady] = useState(false)
 
 useEffect(() => {
-try {
+if (typeof window !== "undefined") {
 const user = localStorage.getItem("user")
 
 if (!user) {
 router.push("/")
 } else {
-setLoading(false)
+setReady(true)
 }
-} catch (error) {
-router.push("/")
 }
 }, [router])
 
@@ -26,47 +24,16 @@ localStorage.removeItem("user")
 router.push("/")
 }
 
-if (loading) {
-return <p>Carregando...</p>
-}
+if (!ready) return null
 
 return (
-<div
-style={{
-display: "flex",
-alignItems: "center",
-justifyContent: "center",
-height: "100vh",
-background: "#f4f6f8",
-}}
->
-<div
-style={{
-background: "#fff",
-padding: "40px",
-borderRadius: "12px",
-boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-textAlign: "center",
-}}
->
+<div style={{ padding: 40 }}>
 <h1>Dashboard</h1>
 <p>Você está logado</p>
 
-<button
-onClick={logout}
-style={{
-padding: "12px",
-marginTop: 20,
-background: "#ff4d4f",
-color: "#fff",
-border: "none",
-borderRadius: "8px",
-cursor: "pointer",
-}}
->
+<button onClick={logout}>
 Sair
 </button>
-</div>
 </div>
 )
 }
