@@ -1,33 +1,17 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-
 export default function Sidebar() {
-const router = useRouter()
-
 return (
 <div style={{
-width: 220,
-height: "100vh",
-background: "#020617",
+width: 200,
+background: "#111",
 color: "#fff",
-padding: 20
+padding: 20,
+minHeight: "100vh"
 }}>
-<h2>⚡ Digital Twin</h2>
-
-<div style={{ marginTop: 30 }}>
-<p onClick={() => router.push("/dashboard")} style={{ cursor: "pointer" }}>
-📊 Dashboard
-</p>
-
-<p onClick={() => router.push("/projects")} style={{ cursor: "pointer" }}>
-📁 Projetos
-</p>
-
-<p onClick={() => router.push("/insights")} style={{ cursor: "pointer" }}>
-🧠 Insights
-</p>
-</div>
+<h3>Menu</h3>
+<p>Dashboard</p>
+<p>Projetos</p>
 </div>
 )
 }
