@@ -1,44 +1,34 @@
 "use client"
 
+import Sidebar from "../components/Sidebar"
+import Header from "../components/Header"
+
 export default function Dashboard() {
 return (
 <div style={{ display: "flex" }}>
 
 <Sidebar />
 
-<div style={{
-flex: 1,
-padding: 40,
-background: "#0f172a",
-color: "#fff",
-minHeight: "100vh"
-}}>
+<div style={{ flex: 1 }}>
+<Header />
+
+<div style={{ padding: 40 }}>
 <h1>📊 Dashboard</h1>
+<p>Bem-vindo ao sistema inteligente</p>
 
+<div style={{ marginTop: 20 }}>
 <div style={{
-display: "grid",
-gridTemplateColumns: "repeat(3, 1fr)",
-gap: 20,
-marginTop: 20
+padding: 20,
+background: "#0f172a",
+borderRadius: 10,
+color: "#fff"
 }}>
-
-<div style={{ background: "#1e293b", padding: 20, borderRadius: 10 }}>
-<h3>Projetos</h3>
-<p>12 ativos</p>
+Status: Operacional 🚀
 </div>
-
-<div style={{ background: "#1e293b", padding: 20, borderRadius: 10 }}>
-<h3>Insights</h3>
-<p>8 análises</p>
+</div>
+</div>
 </div>
 
-<div style={{ background: "#1e293b", padding: 20, borderRadius: 10 }}>
-<h3>Status</h3>
-<p>Online</p>
-</div>
-
-</div>
-</div>
 </div>
 )
 }
