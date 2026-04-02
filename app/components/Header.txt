@@ -6,9 +6,12 @@ return (
 padding: 20,
 borderBottom: "1px solid #1e293b",
 background: "#020617",
-color: "#fff"
+color: "#fff",
+display: "flex",
+justifyContent: "space-between"
 }}>
-<h3>Sistema Inteligente</h3>
+<span>Plataforma Inteligente</span>
+<span>👤 Elisa</span>
 </div>
 )
 }

@@ -1,43 +1,28 @@
 "use client"
 
-import Sidebar from "../components/Sidebar"
-import Header from "../components/Header"
+import LayoutShell from "../components/LayoutShell"
+import Card from "../components/Card"
 
 export default function Projects() {
 return (
-<div style={{ display: "flex" }}>
+<LayoutShell>
 
-<Sidebar />
-
-<div style={{ flex: 1 }}>
-<Header />
-
-<div style={{ padding: 40 }}>
 <h1>📁 Projetos</h1>
 
-<div style={{ marginTop: 20 }}>
-<div style={{
-background: "#0f172a",
-padding: 20,
-borderRadius: 10,
-color: "#fff",
-marginBottom: 10
-}}>
-Projeto A — Em andamento 🚧
-</div>
+<div style={{ marginTop: 20, display: "grid", gap: 15 }}>
 
-<div style={{
-background: "#0f172a",
-padding: 20,
-borderRadius: 10,
-color: "#fff"
-}}>
-Projeto B — Concluído ✅
-</div>
-</div>
-</div>
-</div>
+<Card>
+<strong>Projeto A</strong><br/>
+Status: Em andamento 🚧
+</Card>
+
+<Card>
+<strong>Projeto B</strong><br/>
+Status: Concluído ✅
+</Card>
 
 </div>
+
+</LayoutShell>
 )
 }

@@ -1,34 +1,27 @@
 "use client"
 
-import Sidebar from "../components/Sidebar"
-import Header from "../components/Header"
+import LayoutShell from "../components/LayoutShell"
+import Card from "../components/Card"
 
 export default function Dashboard() {
 return (
-<div style={{ display: "flex" }}>
+<LayoutShell>
 
-<Sidebar />
-
-<div style={{ flex: 1 }}>
-<Header />
-
-<div style={{ padding: 40 }}>
 <h1>📊 Dashboard</h1>
-<p>Bem-vindo ao sistema inteligente</p>
 
-<div style={{ marginTop: 20 }}>
 <div style={{
-padding: 20,
-background: "#0f172a",
-borderRadius: 10,
-color: "#fff"
+display: "grid",
+gridTemplateColumns: "repeat(3, 1fr)",
+gap: 20,
+marginTop: 20
 }}>
-Status: Operacional 🚀
-</div>
-</div>
-</div>
-</div>
+
+<Card>Status: Operacional 🚀</Card>
+<Card>Usuários: 128</Card>
+<Card>Projetos Ativos: 12</Card>
 
 </div>
+
+</LayoutShell>
 )
 }

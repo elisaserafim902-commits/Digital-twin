@@ -8,27 +8,28 @@ const router = useRouter()
 return (
 <div style={{
 height: "100vh",
+background: "radial-gradient(circle, #020617, #000)",
+color: "#fff",
 display: "flex",
-justifyContent: "center",
-alignItems: "center",
 flexDirection: "column",
-background: "#020617",
-color: "#fff"
+justifyContent: "center",
+alignItems: "center"
 }}>
-<h1>🚀 Sistema Digital Twin</h1>
+<h1>🚀 Digital Twin Platform</h1>
+<p>Sistema inteligente de gestão</p>
 
 <button
 onClick={() => router.push("/dashboard")}
 style={{
 marginTop: 20,
-padding: "10px 20px",
+padding: "12px 24px",
 background: "#22c55e",
 border: "none",
-borderRadius: 8,
+borderRadius: 10,
 cursor: "pointer"
 }}
 >
-Entrar no Sistema
+Entrar
 </button>
 </div>
 )
