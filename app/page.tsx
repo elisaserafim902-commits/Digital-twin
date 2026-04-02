@@ -1,36 +1,43 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import LayoutShell from "../components/LayoutShell"
+import Card from "../components/Card"
 
-export default function Home() {
-const router = useRouter()
-
+export default function Dashboard() {
 return (
-<div style={{
-height: "100vh",
-background: "radial-gradient(circle, #020617, #000)",
-color: "#fff",
-display: "flex",
-flexDirection: "column",
-justifyContent: "center",
-alignItems: "center"
-}}>
-<h1>🚀 Digital Twin Platform</h1>
-<p>Sistema inteligente de gestão</p>
+<LayoutShell>
 
-<button
-onClick={() => router.push("/dashboard")}
-style={{
-marginTop: 20,
-padding: "12px 24px",
-background: "#22c55e",
-border: "none",
-borderRadius: 10,
-cursor: "pointer"
-}}
->
-Entrar
-</button>
+<div className="mb-8">
+<h1 className="text-4xl font-bold text-white">
+Dashboard
+</h1>
+<p className="text-gray-400 mt-2">
+Visão geral do sistema em tempo real
+</p>
 </div>
+
+<div className="grid md:grid-cols-3 gap-6">
+
+<Card title="Status">
+<span className="text-green-400 font-semibold">
+● Operacional
+</span>
+</Card>
+
+<Card title="Usuários">
+<span className="text-3xl font-bold text-white">
+128
+</span>
+</Card>
+
+<Card title="Projetos">
+<span className="text-3xl font-bold text-white">
+12 ativos
+</span>
+</Card>
+
+</div>
+
+</LayoutShell>
 )
 }

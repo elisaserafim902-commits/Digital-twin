@@ -1,13 +1,19 @@
-export default function Card({ children }: any) {
+"use client"
+
+export default function Card({ title, children }: any) {
 return (
-<div style={{
-background: "#0f172a",
-padding: 20,
-borderRadius: 12,
-color: "#fff",
-boxShadow: "0 0 20px rgba(0,0,0,0.3)"
-}}>
-{children}
+<div className="
+bg-[#111827]
+border border-[#1f2937]
+rounded-2xl
+p-6
+shadow-lg
+hover:scale-[1.02]
+transition-all
+duration-300
+">
+<p className="text-gray-400 text-sm mb-2">{title}</p>
+<div>{children}</div>
 </div>
 )
 }

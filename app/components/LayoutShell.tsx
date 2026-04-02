@@ -3,33 +3,20 @@
 import Sidebar from "./Sidebar"
 import Header from "./Header"
 
-export default function LayoutShell({ children }: { children: React.ReactNode }) {
+export default function LayoutShell({ children }: any) {
 return (
-<div style={{
-display: "flex",
-background: "#020617"
-}}>
+<div className="flex bg-[#020617] min-h-screen text-white">
 
 <Sidebar />
 
-<div style={{
-flex: 1,
-display: "flex",
-flexDirection: "column",
-minHeight: "100vh"
-}}>
-
+<div className="flex-1 flex flex-col">
 <Header />
 
-<main style={{
-padding: "30px",
-background: "linear-gradient(to bottom, #020617, #020617)",
-flex: 1
-}}>
+<main className="p-8">
 {children}
 </main>
-
 </div>
+
 </div>
 )
 }
