@@ -1,10 +1,15 @@
 "use client"
 
-export default function Card({ title, children }: any) {
+type CardProps = {
+title?: string
+children: React.ReactNode
+}
+
+export default function Card({ title, children }: CardProps) {
 return (
 <div className="
-bg-[#111827]
-border border-[#1f2937]
+bg-[#020617]
+border border-gray-800
 rounded-2xl
 p-6
 shadow-lg
@@ -12,8 +17,15 @@ hover:scale-[1.02]
 transition-all
 duration-300
 ">
-<p className="text-gray-400 text-sm mb-2">{title}</p>
-<div>{children}</div>
+{title && (
+<p className="text-gray-400 text-sm mb-2">
+{title}
+</p>
+)}
+
+<div className="text-white text-lg font-semibold">
+{children}
+</div>
 </div>
 )
 }
