@@ -3,21 +3,18 @@
 export default function Header() {
 return (
 <header className="
-flex
-justify-between
-items-center
-px-8
-py-4
-border-b border-[#1f2937]
-bg-[#020617]
+flex justify-between items-center
+px-8 py-4
+border-b border-gray-800
+bg-[#020617]/80 backdrop-blur
 ">
-<span className="text-gray-400">
-Plataforma Inteligente
-</span>
+<h1 className="text-lg font-semibold text-white">
+Digital Twin Platform
+</h1>
 
-<span className="text-white font-medium">
+<div className="text-gray-400">
 👤 Elisa
-</span>
+</div>
 </header>
 )
 }

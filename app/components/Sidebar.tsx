@@ -5,10 +5,10 @@ return (
 <aside className="
 w-64
 bg-[#020617]
-border-r border-[#1f2937]
+border-r border-gray-800
 p-6
 ">
-<h2 className="text-xl font-bold mb-8">
+<h2 className="text-white text-xl font-bold mb-8">
 🚀 Digital Twin
 </h2>
 
