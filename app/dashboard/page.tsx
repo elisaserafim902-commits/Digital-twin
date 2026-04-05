@@ -11,9 +11,17 @@ return (
 </h1>
 
 <div className="grid grid-cols-3 gap-6">
-<Card>🚀 Status: Operacional</Card>
-<Card>👥 Usuários: 128</Card>
-<Card>📁 Projetos: 12</Card>
+<Card title="STATUS">
+Operacional
+</Card>
+
+<Card title="USUÁRIOS">
+128
+</Card>
+
+<Card title="PROJETOS">
+12
+</Card>
 </div>
 </LayoutShell>
 )
