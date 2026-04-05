@@ -1,5 +1,5 @@
-import LayoutShell from "../components/LayoutShell"
-import Card from "../components/Card"
+import LayoutShell from "@/components/LayoutShell"
+import Card from "@/components/Card"
 
 export default function Dashboard() {
 return (
