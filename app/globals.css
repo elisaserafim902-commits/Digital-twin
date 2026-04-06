@@ -3,7 +3,5 @@
 @tailwind utilities;
 
 body {
-background: radial-gradient(circle at top, #0f172a, #020617);
-color: white;
-font-family: system-ui, sans-serif;
+background: radial-gradient(circle at top, #020617, #020617);
 }
