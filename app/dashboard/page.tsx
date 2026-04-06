@@ -1,21 +1,22 @@
-"use client"
-
-import { useSession } from "next-auth/react"
+import Sidebar from "../components/Sidebar"
+import Topbar from "../components/Topbar"
+import Card from "../components/Card"
 
 export default function Dashboard() {
-const { data: session } = useSession()
-
 return (
-<div className="min-h-screen bg-[#020617] text-white p-10">
+<div className="flex bg-[#020617] min-h-screen">
 
-<h1 className="text-3xl font-bold text-cyan-400">
-NeuroTwin Dashboard
-</h1>
+<Sidebar />
 
-<p className="mt-4 text-gray-400">
-Usuário: {session?.user?.name}
-</p>
+<div className="flex-1">
+<Topbar />
 
+<div className="p-6 grid grid-cols-3 gap-6">
+<Card title="Machines Active" value="24" />
+<Card title="Alerts" value="3" />
+<Card title="Efficiency" value="92%" />
+</div>
+</div>
 </div>
 )
-}
+} 
