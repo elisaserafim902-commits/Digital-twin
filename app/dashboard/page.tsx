@@ -1,28 +1,21 @@
 "use client"
 
-import LayoutShell from "../components/LayoutShell"
-import Card from "../components/Card"
+import { useSession } from "next-auth/react"
 
 export default function Dashboard() {
+const { data: session } = useSession()
+
 return (
-<LayoutShell>
-<h1 className="text-4xl font-bold text-white mb-6">
-📊 Dashboard
+<div className="min-h-screen bg-[#020617] text-white p-10">
+
+<h1 className="text-3xl font-bold text-cyan-400">
+NeuroTwin Dashboard
 </h1>
 
-<div className="grid grid-cols-3 gap-6">
-<Card title="STATUS">
-Operacional
-</Card>
+<p className="mt-4 text-gray-400">
+Usuário: {session?.user?.name}
+</p>
 
-<Card title="USUÁRIOS">
-128
-</Card>
-
-<Card title="PROJETOS">
-12
-</Card>
 </div>
-</LayoutShell>
 )
 }
