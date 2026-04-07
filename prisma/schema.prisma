@@ -7,9 +7,16 @@ provider = "sqlite"
 url = "file:./dev.db"
 }
 
-model Task {
+model User {
 id String @id @default(cuid())
-title String
-status String @default("pending")
-createdAt DateTime @default(now())
+email String @unique
+password String
+companyId String
+company Company @relation(fields: [companyId], references: [id])
+}
+
+model Company {
+id String @id @default(cuid())
+name String
+users User[]
 }
