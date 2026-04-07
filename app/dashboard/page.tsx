@@ -1,8 +1,47 @@
 "use client"
 
 import { motion } from "framer-motion"
+import {
+LineChart,
+Line,
+XAxis,
+YAxis,
+Tooltip,
+ResponsiveContainer
+} from "recharts"
+import { useEffect, useState } from "react"
+
+// GERADOR DE DADOS DINÂMICOS
+function generateData() {
+return Array.from({ length: 10 }).map((_, i) => ({
+name: `T${i}`,
+value: Math.floor(Math.random() * 100) + 50,
+}))
+}
 
 export default function Dashboard() {
+const [data, setData] = useState(generateData())
+const [iaText, setIaText] = useState("Analisando sistema...")
+
+// ATUALIZAÇÃO AUTOMÁTICA
+useEffect(() => {
+const interval = setInterval(() => {
+setData(generateData())
+
+const messages = [
+"IA detectou aumento de eficiência",
+"Sistema ajustando parâmetros automaticamente",
+"Otimização energética em execução",
+"Estabilidade operacional elevada",
+"Previsão de crescimento positivo",
+]
+
+setIaText(messages[Math.floor(Math.random() * messages.length)])
+}, 3000)
+
+return () => clearInterval(interval)
+}, [])
+
 return (
 <main className="min-h-screen bg-gradient-to-br from-[#020617] via-[#020617] to-[#020617] text-white p-10">
 
@@ -15,115 +54,57 @@ Sistema industrial inteligente • Tempo real
 </p>
 </div>
 
-<div className="text-sm text-green-400">
-● Sistema Online
+<div className="text-green-400 text-sm">
+● IA Ativa
 </div>
 </div>
 
-{/* GRID */}
+{/* KPIs */}
 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-{/* PRODUÇÃO */}
-<motion.div
-whileHover={{ scale: 1.03 }}
-className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-xl"
->
+<motion.div whileHover={{ scale: 1.03 }} className="bg-white/5 p-6 rounded-2xl border border-white/10">
 <p className="text-gray-400 text-sm">Produção</p>
-<h2 className="text-4xl font-bold mt-2">87%</h2>
-<p className="text-green-400 text-sm mt-1">+4.2% hoje</p>
+<h2 className="text-4xl font-bold">87%</h2>
 </motion.div>
 
-{/* EFICIÊNCIA */}
-<motion.div
-whileHover={{ scale: 1.03 }}
-className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-xl"
->
+<motion.div whileHover={{ scale: 1.03 }} className="bg-white/5 p-6 rounded-2xl border border-white/10">
 <p className="text-gray-400 text-sm">Eficiência</p>
-<h2 className="text-4xl font-bold mt-2">92%</h2>
-<p className="text-green-400 text-sm mt-1">+2.1% otimização</p>
+<h2 className="text-4xl font-bold text-green-400">+12%</h2>
 </motion.div>
 
-{/* ALERTAS */}
-<motion.div
-whileHover={{ scale: 1.03 }}
-className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-xl"
->
+<motion.div whileHover={{ scale: 1.03 }} className="bg-white/5 p-6 rounded-2xl border border-white/10">
 <p className="text-gray-400 text-sm">Alertas</p>
-<h2 className="text-4xl font-bold mt-2 text-red-400">2</h2>
-<p className="text-red-400 text-sm mt-1">
-Pico de carga detectado
-</p>
+<h2 className="text-4xl font-bold text-red-400">2</h2>
 </motion.div>
 
 </div>
 
-{/* IA ANALYSIS */}
-<div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+{/* GRÁFICO */}
+<div className="mt-10 bg-white/5 p-6 rounded-2xl border border-white/10">
+<p className="text-gray-400 mb-4">Performance em tempo real</p>
 
-{/* BLOCO IA */}
-<div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-xl">
-<p className="text-gray-400 text-sm">Análise da IA</p>
+<ResponsiveContainer width="100%" height={300}>
+<LineChart data={data}>
+<XAxis dataKey="name" stroke="#888" />
+<YAxis stroke="#888" />
+<Tooltip />
+<Line
+type="monotone"
+dataKey="value"
+stroke="#3b82f6"
+strokeWidth={3}
+/>
+</LineChart>
+</ResponsiveContainer>
+</div>
 
-<p className="mt-4 text-white leading-relaxed">
-O sistema detectou aumento progressivo de eficiência nas últimas 4 horas.
-Há indícios de otimização automática em execução.
+{/* IA */}
+<div className="mt-10 bg-white/5 p-6 rounded-2xl border border-white/10">
+<p className="text-gray-400 text-sm">Neuro IA</p>
+
+<p className="mt-4 text-lg text-blue-400">
+{iaText}
 </p>
-
-<p className="mt-3 text-blue-400 text-sm">
-Recomendação: manter parâmetros atuais.
-</p>
-</div>
-
-{/* STATUS SISTEMA */}
-<div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-xl">
-<p className="text-gray-400 text-sm">Status Operacional</p>
-
-<div className="mt-4 space-y-2 text-sm">
-
-<div className="flex justify-between">
-<span>Linhas ativas</span>
-<span className="text-green-400">12</span>
-</div>
-
-<div className="flex justify-between">
-<span>Máquinas online</span>
-<span className="text-green-400">98%</span>
-</div>
-
-<div className="flex justify-between">
-<span>Latência sistema</span>
-<span className="text-blue-400">32ms</span>
-</div>
-
-<div className="flex justify-between">
-<span>Consumo energia</span>
-<span className="text-yellow-400">Alto</span>
-</div>
-
-</div>
-</div>
-
-</div>
-
-{/* ALERTAS DETALHADOS */}
-<div className="mt-10 bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-xl">
-<p className="text-gray-400 text-sm mb-4">Eventos Recentes</p>
-
-<div className="space-y-3 text-sm">
-
-<div className="text-red-400">
-⚠️ Pico de carga detectado às 16:32
-</div>
-
-<div className="text-yellow-400">
-⚠️ Oscilação leve na linha 3
-</div>
-
-<div className="text-green-400">
-✔️ Sistema estabilizado automaticamente
-</div>
-
-</div>
 </div>
 
 </main>
