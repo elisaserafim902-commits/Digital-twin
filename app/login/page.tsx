@@ -2,49 +2,71 @@
 
 import { signIn } from "next-auth/react"
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
-const [loading, setLoading] = useState(false)
+const router = useRouter()
 
-async function handleLogin() {
-setLoading(true)
-await signIn("credentials", {
-redirect: true,
-callbackUrl: "/dashboard",
+const [email, setEmail] = useState("")
+const [password, setPassword] = useState("")
+const [error, setError] = useState("")
+
+async function handleLogin(e: any) {
+e.preventDefault()
+
+const res = await signIn("credentials", {
+email,
+password,
+redirect: false,
 })
+
+if (res?.error) {
+setError("Credenciais inválidas")
+return
+}
+
+router.push("/dashboard")
 }
 
 return (
-<div className="min-h-screen flex items-center justify-center bg-[#020617] relative overflow-hidden">
+<div className="min-h-screen flex items-center justify-center bg-[#020617] text-white">
 
-{/* BACKGROUND FUTURISTA */}
-<div className="absolute w-[500px] h-[500px] bg-cyan-500/20 blur-[120px] top-[-100px] left-[-100px]" />
-<div className="absolute w-[500px] h-[500px] bg-purple-500/20 blur-[120px] bottom-[-100px] right-[-100px]" />
-
-<motion.div
-initial={{ opacity: 0, scale: 0.9 }}
-animate={{ opacity: 1, scale: 1 }}
-className="w-full max-w-md p-8 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+<form
+onSubmit={handleLogin}
+className="bg-white/5 backdrop-blur-xl p-8 rounded-2xl border border-white/10 w-[350px]"
 >
-
-<h1 className="text-3xl font-bold text-center text-cyan-400">
-NeuroTwin
+<h1 className="text-2xl font-bold mb-6 text-center">
+NeuroTwin Login
 </h1>
 
-<p className="text-center text-gray-400 mt-2">
-Acesso ao sistema inteligente
-</p>
+{error && (
+<p className="text-red-400 text-sm mb-4">{error}</p>
+)}
+
+<input
+type="email"
+placeholder="Email"
+className="w-full mb-4 p-3 rounded bg-black/30 border border-white/10"
+value={email}
+onChange={(e) => setEmail(e.target.value)}
+/>
+
+<input
+type="password"
+placeholder="Senha"
+className="w-full mb-6 p-3 rounded bg-black/30 border border-white/10"
+value={password}
+onChange={(e) => setPassword(e.target.value)}
+/>
 
 <button
-onClick={handleLogin}
-disabled={loading}
-className="mt-8 w-full py-3 bg-cyan-500 hover:bg-cyan-400 rounded-xl transition shadow-[0_0_30px_rgba(34,211,238,0.4)]"
+type="submit"
+className="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-semibold"
 >
-{loading ? "Entrando..." : "Entrar no sistema"}
+Entrar no Sistema
 </button>
+</form>
 
-</motion.div>
 </div>
 )
 }
