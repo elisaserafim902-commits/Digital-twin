@@ -1,72 +1,84 @@
 "use client"
 
-import { signIn } from "next-auth/react"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 export default function LoginPage() {
-const router = useRouter()
+const [isRegister, setIsRegister] = useState(false)
 
 const [email, setEmail] = useState("")
 const [password, setPassword] = useState("")
-const [error, setError] = useState("")
+const [companyName, setCompanyName] = useState("")
 
-async function handleLogin(e: any) {
-e.preventDefault()
-
-const res = await signIn("credentials", {
-email,
-password,
-redirect: false,
+async function handleAuth() {
+if (isRegister) {
+const res = await fetch("/api/register", {
+method: "POST",
+body: JSON.stringify({ email, password, companyName })
 })
 
-if (res?.error) {
-setError("Credenciais inválidas")
+const data = await res.json()
+
+if (data.error) {
+alert(data.error)
 return
 }
+}
 
-router.push("/dashboard")
+// LOGIN AUTOMÁTICO
+await signIn("credentials", {
+email,
+password,
+redirect: true,
+callbackUrl: "/dashboard"
+})
 }
 
 return (
 <div className="min-h-screen flex items-center justify-center bg-[#020617] text-white">
+<div className="bg-white/10 p-8 rounded-xl backdrop-blur-xl w-[350px] space-y-4">
 
-<form
-onSubmit={handleLogin}
-className="bg-white/5 backdrop-blur-xl p-8 rounded-2xl border border-white/10 w-[350px]"
->
-<h1 className="text-2xl font-bold mb-6 text-center">
-NeuroTwin Login
+<h1 className="text-2xl font-bold text-center">
+{isRegister ? "Criar Conta" : "Login"}
 </h1>
 
-{error && (
-<p className="text-red-400 text-sm mb-4">{error}</p>
+{isRegister && (
+<input
+placeholder="Nome da empresa"
+className="w-full p-2 rounded text-black"
+onChange={(e) => setCompanyName(e.target.value)}
+/>
 )}
 
 <input
-type="email"
 placeholder="Email"
-className="w-full mb-4 p-3 rounded bg-black/30 border border-white/10"
-value={email}
+className="w-full p-2 rounded text-black"
 onChange={(e) => setEmail(e.target.value)}
 />
 
 <input
 type="password"
 placeholder="Senha"
-className="w-full mb-6 p-3 rounded bg-black/30 border border-white/10"
-value={password}
+className="w-full p-2 rounded text-black"
 onChange={(e) => setPassword(e.target.value)}
 />
 
 <button
-type="submit"
-className="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-semibold"
+onClick={handleAuth}
+className="w-full bg-blue-600 p-2 rounded"
 >
-Entrar no Sistema
+{isRegister ? "Criar conta e entrar" : "Entrar"}
 </button>
-</form>
 
+<p
+className="text-center cursor-pointer text-sm text-gray-300"
+onClick={() => setIsRegister(!isRegister)}
+>
+{isRegister
+? "Já tem conta? Fazer login"
+: "Não tem conta? Criar agora"}
+</p>
+</div>
 </div>
 )
 }
