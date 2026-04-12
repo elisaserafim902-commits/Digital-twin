@@ -19,4 +19,12 @@ model Company {
 id String @id @default(cuid())
 name String
 users User[]
+projects Project[]
+}
+
+model Project {
+id String @id @default(cuid())
+name String
+companyId String
+company Company @relation(fields: [companyId], references: [id])
 }
