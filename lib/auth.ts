@@ -1,27 +1,36 @@
-import { PrismaClient } from "@prisma/client"
+import CredentialsProvider from "next-auth/providers/credentials"
+import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
 
-const prisma = new PrismaClient()
+export const authOptions = {
+providers: [
+CredentialsProvider({
+name:"credentials",
+credentials:{},
+async authorize(credentials:any){
 
-export async function authenticate(email: string, password: string) {
-try {
 const user = await prisma.user.findUnique({
-where: { email }
+where:{ email: credentials.email }
 })
 
-if (!user) return null
+if(!user) return null
 
-const valid = await bcrypt.compare(password, user.password)
+const valid = await bcrypt.compare(
+credentials.password,
+user.password
+)
 
-if (!valid) return null
+if(!valid) return null
 
 return {
-id: user.id,
-email: user.email,
-companyId: user.companyId
+id:user.id,
+email:user.email
 }
-} catch (error) {
-console.error("Auth error:", error)
-return null
 }
+})
+],
+session:{
+strategy:"jwt"
+},
+secret: process.env.NEXTAUTH_SECRET
 }
