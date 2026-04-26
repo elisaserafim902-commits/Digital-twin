@@ -4,14 +4,21 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
 export default async function DashboardPage() {
 const session = await getServerSession(authOptions)
-if (!session) redirect("/login")
+
+if (!session) {
+redirect("/login")
+}
 
 return (
-<div>
+<div style={{padding:"40px"}}>
 <h1>NeuroTwin Dashboard</h1>
-<p>Produá∆o: 87%%</p>
-<p>Eficiància: +12.4%%</p>
-<p>{session.user?.email}</p>
+
+<p>Produ√ß√£o: 87%</p>
+<p>Efici√™ncia: +12.4%</p>
+
+<p>
+Usu√°rio: {session.user?.email}
+</p>
 </div>
 )
 }
