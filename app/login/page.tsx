@@ -1,13 +1,18 @@
 "use client"
 
-import { signIn } from "next-auth/react"
 import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
+const router = useRouter()
+
 const [email, setEmail] = useState("")
 const [password, setPassword] = useState("")
 
-async function handleLogin() {
+const handleLogin = async (e: any) => {
+e.preventDefault()
+
 const res = await signIn("credentials", {
 email,
 password,
@@ -15,37 +20,42 @@ redirect: false
 })
 
 if (res?.ok) {
-window.location.href = "/dashboard"
+router.push("/dashboard")
 } else {
 alert("Login inválido")
 }
 }
 
 return (
-<div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-<div className="bg-slate-900 p-8 rounded-lg w-80 space-y-4">
-<h1 className="text-2xl font-bold text-center">Login</h1>
+<div className="flex flex-col items-center justify-center h-screen text-white">
+<h1 className="text-3xl mb-4">Login</h1>
 
+<form onSubmit={handleLogin} className="flex flex-col gap-2">
 <input
 placeholder="Email"
-className="w-full p-2 rounded bg-slate-800"
+value={email}
 onChange={(e) => setEmail(e.target.value)}
+className="text-black p-2"
 />
 
 <input
 type="password"
 placeholder="Senha"
-className="w-full p-2 rounded bg-slate-800"
+value={password}
 onChange={(e) => setPassword(e.target.value)}
+className="text-black p-2"
 />
 
+<button className="bg-white text-black p-2">Entrar</button>
+</form>
+
+{/* 🔥 NOVO BOTÃO */}
 <button
-onClick={handleLogin}
-className="w-full bg-blue-600 py-2 rounded"
+onClick={() => router.push("/register")}
+className="mt-4 underline"
 >
-Entrar
+Criar conta
 </button>
-</div>
 </div>
 )
 }

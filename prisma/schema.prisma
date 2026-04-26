@@ -1,30 +1,27 @@
-generator client {
-provider = "prisma-client-js"
-}
+model Company {
+id String @id @default(cuid())
+name String
+plan String @default("starter")
+createdAt DateTime @default(now())
 
-datasource db {
-provider = "sqlite"
-url = "file:./dev.db"
+users User[]
+projects Project[]
 }
 
 model User {
 id String @id @default(cuid())
 email String @unique
 password String
-companyId String
-company Company @relation(fields: [companyId], references: [id])
-}
+role String @default("owner")
 
-model Company {
-id String @id @default(cuid())
-name String
-users User[]
-projects Project[]
+companyId String
+company Company @relation(fields:[companyId], references:[id])
 }
 
 model Project {
 id String @id @default(cuid())
 name String
+
 companyId String
-company Company @relation(fields: [companyId], references: [id])
+company Company @relation(fields:[companyId], references:[id])
 }
