@@ -1,24 +1,18 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
+import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
-export default async function DashboardPage() {
+export default async function Dashboard() {
+
 const session = await getServerSession(authOptions)
 
-if (!session) {
+if(!session){
 redirect("/login")
 }
 
 return (
-<div style={{padding:"40px"}}>
-<h1>NeuroTwin Dashboard</h1>
-
-<p>Produção: 87%</p>
-<p>Eficiência: +12.4%</p>
-
-<p>
-Usuário: {session.user?.email}
-</p>
+<div>
+Dashboard protegido funcionando
 </div>
 )
 }

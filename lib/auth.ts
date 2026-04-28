@@ -1,12 +1,19 @@
-import CredentialsProvider from "next-auth/providers/credentials"
-import { prisma } from "@/lib/prisma"
+import CredentialsProvider from "next-auth/providers/ credentials"
 import bcrypt from "bcrypt"
+import { PrismaClient } from "@prisma/client"
+
+const prisma = new PrismaClient()
 
 export const authOptions = {
 providers: [
 CredentialsProvider({
-name:"credentials",
-credentials:{},
+name: "Credentials",
+
+credentials:{
+email:{},
+password:{}
+},
+
 async authorize(credentials:any){
 
 const user = await prisma.user.findUnique({
@@ -23,14 +30,16 @@ user.password
 if(!valid) return null
 
 return {
-id:user.id,
+id: user.id ,
 email:user.email
 }
 }
 })
 ],
+
 session:{
 strategy:"jwt"
 },
+
 secret: process.env.NEXTAUTH_SECRET
 }
