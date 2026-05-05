@@ -2,7 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
+/* RESET BÁSICO */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+/* BASE DO APP */
 body {
-background-color: #020617;
+background-color: #020617; /* fundo escuro elegante */
 color: white;
+font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* LINKS */
+a {
+text-decoration: none;
+color: inherit;
+}
+
+/* SCROLLBAR (opcional, mais profissional) */
+::-webkit-scrollbar {
+width: 6px;
+}
+
+::-webkit-scrollbar-track {
+background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+background: #334155;
+border-radius: 4px;
+}
+
+/* CARD PADRÃO */
+.card {
+background: #0f172a;
+border-radius: 8px;
+padding: 16px;
+box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+/* BOTÃO PADRÃO */
+.btn {
+background: #2563eb;
+color: white;
+padding: 8px 12px;
+border-radius: 6px;
+transition: 0.2s;
+}
+
+.btn:hover {
+background: #1d4ed8;
 }
