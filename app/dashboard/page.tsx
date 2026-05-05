@@ -1,18 +1,8 @@
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { redirect } from "next/navigation"
-
-export default async function Dashboard() {
-
-const session = await getServerSession(authOptions)
-
-if(!session){
-redirect("/login")
-}
-
+export default function Dashboard() {
 return (
 <div>
-Dashboard protegido funcionando
+<h1 className="text-2xl font-bold">Dashboard</h1>
+<p>Bem-vindo ao sistema</p>
 </div>
 )
 }
