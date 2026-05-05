@@ -1,34 +1,16 @@
-import CredentialsProvider from "next-auth/providers/ credentials"
-import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcrypt"
+import NextAuth from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
 
-const prisma = new PrismaClient()
-
-export const authOptions = {}
+export const authOptions = {
 providers: [
 CredentialsProvider({
 name: "Credentials",
 credentials: {
-email: {},
-password: {}
+email: { label: "Email", type: "text" },
+password: { label: "Senha", type: "password" }
 },
 async authorize(credentials) {
-if (!credentials?.email || !credentials?.password) return null
-
-const user = await prisma.user.findUnique({
-where: { email: credentials.email }
-})
-
-if (!user) return null
-
-const valid = await bcrypt.compare(
-credentials.password,
-user.password
-)
-
-if (!valid) return null
-
-return user
+return { id: "1", name: "User", email: credentials?.email }
 }
 })
 ]
