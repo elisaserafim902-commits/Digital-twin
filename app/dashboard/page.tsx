@@ -1,35 +1,33 @@
 export default function Dashboard() {
 return (
-<div className="space-y-6">
+<div className="min-h-screen p-8">
+<h1 className="text-3xl font-bold mb-6">
+Dashboard Digital Twin
+</h1>
 
-<h1 className="text-3xl font-bold">Painel NeuroTwin</h1>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-{/* CARDS */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-<div className="card">
-<p className="text-gray-400">Usuários</p>
-<h2 className="text-2xl font-bold">120</h2>
+<div className="bg-gray-800 p-6 rounded-xl shadow">
+<h2 className="text-xl font-semibold">Usuários</h2>
+<p className="text-3xl mt-2">128</p>
 </div>
 
-<div className="card">
-<p className="text-gray-400">Projetos</p>
-<h2 className="text-2xl font-bold">8</h2>
+<div className="bg-gray-800 p-6 rounded-xl shadow">
+<h2 className="text-xl font-semibold">Projetos</h2>
+<p className="text-3xl mt-2">32</p>
 </div>
 
-<div className="card">
-<p className="text-gray-400">Status</p>
-<h2 className="text-green-400">Online</h2>
-</div>
-
-</div>
-
-{/* BLOCO PRINCIPAL */}
-<div className="card">
-<h2 className="text-xl font-bold mb-3">Resumo</h2>
-<p>Sistema funcionando e pronto para expansão.</p>
+<div className="bg-gray-800 p-6 rounded-xl shadow">
+<h2 className="text-xl font-semibold">Atividade</h2>
+<p className="text-3xl mt-2">Online</p>
 </div>
 
 </div>
-)
+
+<div className="mt-10 bg-gray-900 p-6 rounded-xl">
+<h2 className="text-xl mb-4">Resumo</h2>
+<p>Seu sistema está rodando com sucesso 🚀</p>
+</div>
+</div>
+);
 }
