@@ -1,22 +1,9 @@
-import { prisma } from "@/lib/prisma"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { NextResponse } from "next/server"
 
-export async function POST(req: Request) {
-const session = await getServerSession(authOptions)
-
-if (!session) {
-return Response.json({ error:"Unauthorized" }, { status:401 })
+export async function GET() {
+try {
+return NextResponse.json({ ok: true })
+} catch (error) {
+return NextResponse.json({ error: "fail" }, { status: 500 })
 }
-
-const body = await req.json()
-
-const project = await prisma.project.create({
-data:{
-name: body.name,
-companyId: body.companyId
-}
-})
-
-return Response.json(project)
 }
