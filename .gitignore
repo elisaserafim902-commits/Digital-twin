@@ -47,3 +47,6 @@ dev.db
 
 # prisma generated
 /app/generated/prisma
+
+.vercel
+.env*.local
