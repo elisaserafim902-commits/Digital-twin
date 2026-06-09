@@ -1,45 +1,36 @@
+
 export default function Dashboard() {
 return (
-<main style={{
-minHeight: "100vh",
-background: "#020617",
-color: "white",
-padding: "30px"
-}}>
-<h1 style={{fontSize:"40px"}}>
+<main className="min-h-screen bg-[#020617] text-white p-10">
+
+<h1 className="text-5xl font-bold mb-10">
 🤖 NeuroTwin Command Center
 </h1>
 
-<p>
-Sistema Industrial Inteligente em Tempo Real
-</p>
+<div className="grid grid-cols-4 gap-6">
 
-<div style={{
-display:"grid",
-gridTemplateColumns:"repeat(4,1fr)",
-gap:"20px",
-marginTop:"30px"
-}}>
-<div style={{background:"#0f172a",padding:"20px",borderRadius:"10px"}}>
-Produção
-<h2>98%</h2>
+<div className="bg-slate-900 p-6 rounded-xl">
+<h3>Produção</h3>
+<p className="text-4xl text-cyan-400">98%</p>
 </div>
 
-<div style={{background:"#0f172a",padding:"20px",borderRadius:"10px"}}>
-Eficiência
-<h2>94%</h2>
+<div className="bg-slate-900 p-6 rounded-xl">
+<h3>IA Ativa</h3>
+<p className="text-4xl text-green-400">ONLINE</p>
 </div>
 
-<div style={{background:"#0f172a",padding:"20px",borderRadius:"10px"}}>
-IA Ativa
-<h2>ONLINE</h2>
+<div className="bg-slate-900 p-6 rounded-xl">
+<h3>Sensores</h3>
+<p className="text-4xl text-yellow-400">2847</p>
 </div>
 
-<div style={{background:"#0f172a",padding:"20px",borderRadius:"10px"}}>
-Sensores
-<h2>2.847</h2>
+<div className="bg-slate-900 p-6 rounded-xl">
+<h3>Eficiência</h3>
+<p className="text-4xl text-cyan-400">94%</p>
 </div>
+
 </div>
+
 </main>
 )
 }

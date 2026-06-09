@@ -1,42 +1,43 @@
+import NeuroBot from "@/components/NeuroBot"
+
 export default function Home() {
 return (
-<main className="min-h-screen bg-[#020617] text-white flex items-center justify-center px-8">
-<div className="max-w-7xl w-full grid md:grid-cols-2 gap-12 items-center">
+<main className="min-h-screen bg-[#020617] text-white">
 
-<div className="flex justify-center">
-<img
-src="/robot-neurobot.png"
-alt="NeuroBot"
-className="w-[400px]"
-/>
-</div>
+<div className="container mx-auto py-20">
 
-<div>
-<h1 className="text-6xl font-bold mb-4">
-NeuroTwin Platform
+<h1 className="text-7xl font-bold text-center">
+NeuroTwin
 </h1>
 
-<p className="text-xl text-gray-300 mb-8">
-Sistema Industrial Inteligente em Tempo Real
+<p className="text-center text-gray-400 mt-4 text-xl">
+Plataforma Inteligente de Digital Twin
 </p>
 
-<div className="space-y-3 text-lg mb-10">
-<p>✓ Dashboard Inteligente</p>
-<p>✓ Digital Twin</p>
-<p>✓ IA Preditiva</p>
-<p>✓ Automação Industrial</p>
-<p>✓ Monitoramento Global</p>
+<div className="flex justify-center mt-16">
+<NeuroBot />
 </div>
+
+<div className="flex justify-center gap-6 mt-12">
 
 <a
 href="/login"
-className="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-xl text-lg font-semibold"
+className="bg-cyan-500 px-8 py-4 rounded-xl"
 >
-Entrar no Sistema
+Entrar
 </a>
+
+<a
+href="/register"
+className="border border-cyan-500 px-8 py-4 rounded-xl"
+>
+Criar Conta
+</a>
+
 </div>
 
 </div>
+
 </main>
 )
 }
