@@ -1,8 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { redirect } from "next/navigation";
 
-export default function Register(){
+export default function RegisterPage() {
+  redirect("/dashboard");
+}
 
 const [email,setEmail]=useState("")
 const [password,setPassword]=useState("")
