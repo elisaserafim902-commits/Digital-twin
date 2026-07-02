@@ -1,66 +1,64 @@
 "use client"
 
-import { useState } from "react"
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition"
 
 export default function Dashboard() {
+const {
+transcript,
+listening,
+resetTranscript
+} = useSpeechRecognition()
 
-const [message, setMessage] = useState("")
-const [reply, setReply] = useState("")
+function falar(texto: string) {
+const voz = new SpeechSynthesisUtterance(texto)
+voz.lang = "pt-BR"
+voz.rate = 1
+window.speechSynthesis.speak(voz)
+}
 
-async function sendMessage() {
+async function ouvir() {
+if (listening) {
+SpeechRecognition.stopListening()
 
-const res = await fetch("/api/neurobot", {
-method: "POST",
-headers: {
-"Content-Type": "application/json",
-},
-body: JSON.stringify({
-message,
-}),
+const resposta = "Entendido, Elisa. Estou analisando sua solicitação: " + transcript
+falar(resposta)
+
+} else {
+resetTranscript()
+
+SpeechRecognition.startListening({
+continuous: true,
+language: "pt-BR"
 })
-
-const data = await res.json()
-
-setReply(data.reply)
+}
 }
 
 return (
-<div className="min-h-screen bg-black text-white p-10">
+<main className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
 
-<h1 className="text-5xl font-bold mb-10">
-NeuroTwin Dashboard
+<h1 className="text-6xl font-bold mb-4">
+NeuroTwin 2050
 </h1>
 
-<div className="bg-zinc-900 p-6 rounded-xl">
-
-<h2 className="text-3xl font-bold mb-4">
-NeuroBot Online
-</h2>
-
-<textarea
-className="w-full p-4 text-black rounded-lg"
-rows={5}
-placeholder="Faça uma pergunta..."
-onChange={(e)=>setMessage(e.target.value)}
-/>
+<p className="mb-10 text-blue-300">
+NeuroBot Online • Comando de voz ativo
+</p>
 
 <button
-onClick={sendMessage}
-className="bg-blue-600 px-6 py-3 rounded-lg mt-4"
+onClick={ouvir}
+className="w-56 h-56 rounded-full bg-blue-600 text-8xl shadow-[0_0_90px_#2563eb]"
 >
-Enviar
+🎙️
 </button>
 
-<div className="mt-8 bg-zinc-800 p-6 rounded-lg">
-<h3 className="text-xl font-bold mb-2">
-Resposta da IA
-</h3>
+<h2 className="mt-8 text-3xl">
+{listening ? "Estou ouvindo..." : "Toque para falar"}
+</h2>
 
-<p>{reply}</p>
-</div>
+<p className="mt-8 text-2xl max-w-4xl text-center">
+{transcript}
+</p>
 
-</div>
-
-</div>
+</main>
 )
 }
