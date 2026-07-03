@@ -1,9 +1,23 @@
 import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
-const body = await req.json()
+const { message } = await req.json()
 
-return NextResponse.json({
-answer: "NeuroBot ativo em modo teste. Recebi: " + body.message
-})
+const texto = message?.toLowerCase() || ""
+
+let reply = "Entendido, Elisa. Estou analisando sua solicitação."
+
+if (texto.includes("clima") || texto.includes("previsão")) {
+reply = "Elisa, para previsão real do clima, o próximo passo é conectar uma API meteorológica. Por enquanto, o módulo de voz e resposta está funcionando."
+}
+
+if (texto.includes("oportunidade")) {
+reply = "Detectei busca por oportunidades. Vou preparar o radar de tendências, negócios e investimentos."
+}
+
+if (texto.includes("relatório")) {
+reply = "Posso estruturar relatórios automáticos com resumo, análise e próximos passos."
+}
+
+return NextResponse.json({ reply })
 }
