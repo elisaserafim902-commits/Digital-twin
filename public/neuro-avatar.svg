@@ -1,0 +1,38 @@
+<svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialGradient id="skin" cx="50%" cy="40%" r="60%">
+<stop offset="0%" stop-color="#6b2f16"/>
+<stop offset="55%" stop-color="#2b120b"/>
+<stop offset="100%" stop-color="#09040a"/>
+</radialGradient>
+<radialGradient id="glow" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#00d5ff" stop-opacity="1"/>
+<stop offset="100%" stop-color="#001aff" stop-opacity="0"/>
+</radialGradient>
+</defs>
+
+<rect width="600" height="600" fill="#020617"/>
+<circle cx="300" cy="300" r="260" fill="url(#glow)" opacity="0.45"/>
+<circle cx="300" cy="300" r="220" fill="none" stroke="#00d5ff" stroke-width="3" opacity="0.8"/>
+<circle cx="300" cy="300" r="180" fill="none" stroke="#7c3aed" stroke-width="2" opacity="0.6"/>
+
+<ellipse cx="300" cy="295" rx="135" ry="175" fill="url(#skin)" stroke="#00d5ff" stroke-width="2"/>
+<path d="M170 230 C190 80 410 80 430 230 C390 170 210 170 170 230Z" fill="#050505"/>
+<circle cx="230" cy="150" r="55" fill="#050505"/>
+<circle cx="300" cy="125" r="70" fill="#050505"/>
+<circle cx="370" cy="150" r="55" fill="#050505"/>
+
+<ellipse cx="250" cy="285" rx="28" ry="13" fill="#00d5ff"/>
+<ellipse cx="350" cy="285" rx="28" ry="13" fill="#00d5ff"/>
+<circle cx="250" cy="285" r="7" fill="#00111f"/>
+<circle cx="350" cy="285" r="7" fill="#00111f"/>
+
+<path d="M300 300 C285 335 285 350 300 355 C315 350 315 335 300 300Z" fill="#180805" stroke="#60a5fa" stroke-width="1"/>
+<path d="M250 390 C280 420 320 420 350 390" fill="none" stroke="#f0a36b" stroke-width="8" stroke-linecap="round"/>
+
+<path d="M190 470 C250 530 350 530 410 470" fill="none" stroke="#00d5ff" stroke-width="5"/>
+<path d="M220 480 C260 515 340 515 380 480" fill="none" stroke="#7c3aed" stroke-width="3"/>
+
+<circle cx="300" cy="485" r="35" fill="#031329" stroke="#00d5ff" stroke-width="4"/>
+<text x="300" y="500" font-size="38" text-anchor="middle" fill="#ffffff">🎙</text>
+</svg>
