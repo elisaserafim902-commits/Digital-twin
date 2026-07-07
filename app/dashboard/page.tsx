@@ -68,12 +68,12 @@ return (
 <p style={styles.subtitle}>Centro de Operações Estratégicas</p>
 
 <nav style={styles.nav}>
-<span>🧠 Centro Cognitivo</span>
-<span>🌎 Observatório Global</span>
+<a style={styles.link} href="/dashboard">🧠 Centro Cognitivo</a>
+<a style={styles.link} href="/dashboard/observatorio">🌎 Observatório Global</a>
+<a style={styles.link} href="/dashboard/relatorios">📄 Relatórios Executivos</a>
+<a style={styles.link} href="/dashboard/tendencias">📈 Tendências</a>
+<a style={styles.link} href="/dashboard/oportunidades">💼 Oportunidades</a>
 <span>⚠️ Alertas Críticos</span>
-<span>📈 Tendências</span>
-<span>💼 Oportunidades</span>
-<span>📄 Relatórios</span>
 <span>🤖 NeuroBot</span>
 </nav>
 </aside>
@@ -131,8 +131,14 @@ padding: 28,
 background: "rgba(2,6,23,.9)",
 borderRight: "1px solid rgba(0,213,255,.25)",
 },
-logo: { fontSize: 30, margin: 0 },
-subtitle: { color: "#7dd3fc", marginBottom: 40 },
+logo: {
+fontSize: 30,
+margin: 0,
+},
+subtitle: {
+color: "#7dd3fc",
+marginBottom: 40,
+},
 nav: {
 display: "flex",
 flexDirection: "column",
@@ -140,9 +146,22 @@ gap: 20,
 fontSize: 17,
 color: "#dbeafe",
 },
-center: { padding: 40, textAlign: "center" },
-title: { fontSize: 48, marginBottom: 8 },
-desc: { color: "#93c5fd", fontSize: 18 },
+link: {
+color: "#dbeafe",
+textDecoration: "none",
+},
+center: {
+padding: 40,
+textAlign: "center",
+},
+title: {
+fontSize: 48,
+marginBottom: 8,
+},
+desc: {
+color: "#93c5fd",
+fontSize: 18,
+},
 avatarBox: {
 display: "flex",
 justifyContent: "center",
@@ -175,9 +194,18 @@ borderRadius: 20,
 border: "1px solid rgba(0,213,255,.25)",
 textAlign: "left",
 },
-label: { color: "#94a3b8", marginTop: 12 },
-command: { color: "#7dd3fc", fontSize: 22 },
-answer: { fontSize: 23, lineHeight: 1.6 },
+label: {
+color: "#94a3b8",
+marginTop: 12,
+},
+command: {
+color: "#7dd3fc",
+fontSize: 22,
+},
+answer: {
+fontSize: 23,
+lineHeight: 1.6,
+},
 rightPanel: {
 padding: 28,
 background: "rgba(2,6,23,.9)",
