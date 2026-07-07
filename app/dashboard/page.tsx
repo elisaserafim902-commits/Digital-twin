@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Dashboard() {
 const [texto, setTexto] = useState("");
-const [resposta, setResposta] = useState("Olá Elisa. NeuroTwin 2050 operacional.");
+const [resposta, setResposta] = useState(
+"NeuroTwin operacional. Aguardando comando estratégico."
+);
 const recognitionRef = useRef<any>(null);
 
 useEffect(() => {
@@ -25,7 +27,7 @@ recognition.interimResults = false;
 recognition.onresult = async (event: any) => {
 const frase = event.results[0][0].transcript;
 setTexto(frase);
-setResposta("Analisando...");
+setResposta("Analisando comando...");
 
 try {
 const r = await fetch("/api/chat", {
@@ -41,10 +43,10 @@ setResposta(reply);
 
 const voz = new SpeechSynthesisUtterance(reply);
 voz.lang = "pt-BR";
-window.speechSynthesis.cancel();
-window.speechSynthesis.speak(voz);
+speechSynthesis.cancel();
+speechSynthesis.speak(voz);
 } catch {
-setResposta("Falha ao consultar o núcleo NeuroBot.");
+setResposta("Falha ao consultar o núcleo operacional.");
 }
 };
 
@@ -59,41 +61,47 @@ return (
 <main style={styles.page}>
 <aside style={styles.sidebar}>
 <h1 style={styles.logo}>NeuroTwin 2050</h1>
-<p style={styles.small}>Centro Cognitivo Institucional</p>
+<p style={styles.subtitle}>Centro de Operações Estratégicas</p>
 
 <nav style={styles.nav}>
 <span>🧠 Centro Cognitivo</span>
 <span>🌎 Observatório Global</span>
+<span>⚠️ Alertas Críticos</span>
 <span>📈 Tendências</span>
-<span>⚠️ Alertas</span>
+<span>💼 Oportunidades</span>
 <span>📄 Relatórios</span>
 <span>🤖 NeuroBot</span>
-<span>⚙️ Configurações</span>
 </nav>
 </aside>
 
 <section style={styles.center}>
-<h2 style={styles.title}>Sistema Neural Inteligente</h2>
-<p style={styles.subtitle}>Monitoramento, previsão e decisão estratégica</p>
+<h2 style={styles.title}>Painel Operacional</h2>
+<p style={styles.desc}>
+Monitoramento, análise, previsão e decisão assistida por IA.
+</p>
 
-<img src="/avatar-neuro.png" alt="NeuroTwin Avatar" style={styles.avatar} />
+<div style={styles.avatarBox}>
+<img src="/avatar-neuro.png" alt="NeuroTwin" style={styles.avatar} />
+</div>
 
-<button onClick={ouvir} style={styles.mic}>🎙 Conversar</button>
+<button onClick={ouvir} style={styles.button}>
+🎙 Comando de Voz
+</button>
 
-<div style={styles.box}>
-<p style={styles.label}>Você disse:</p>
-<p style={styles.userText}>{texto || "Aguardando comando de voz..."}</p>
+<div style={styles.responseBox}>
+<p style={styles.label}>Comando recebido:</p>
+<p style={styles.command}>{texto || "Aguardando comando..."}</p>
 
-<p style={styles.label}>NeuroBot respondeu:</p>
+<p style={styles.label}>Análise NeuroTwin:</p>
 <p style={styles.answer}>{resposta}</p>
 </div>
 </section>
 
-<aside style={styles.panel}>
-<Card title="Status Global" value="Operacional" />
-<Card title="Fontes Ativas" value="12 módulos" />
+<aside style={styles.rightPanel}>
+<Card title="Status do Sistema" value="Operacional" />
 <Card title="Alertas Críticos" value="0" />
 <Card title="Oportunidades" value="24 detectadas" />
+<Card title="Fontes Monitoradas" value="12 módulos" />
 <Card title="Relatórios" value="Prontos para emissão" />
 </aside>
 </main>
@@ -104,7 +112,7 @@ function Card({ title, value }: { title: string; value: string }) {
 return (
 <div style={styles.card}>
 <h3>{title}</h3>
-<p>{value}</p>
+<strong>{value}</strong>
 </div>
 );
 }
@@ -112,44 +120,61 @@ return (
 const styles: any = {
 page: {
 minHeight: "100vh",
-background: "radial-gradient(circle at center, #0b3b70 0%, #020617 45%, #000 100%)",
-color: "white",
 display: "grid",
-gridTemplateColumns: "260px 1fr 340px",
+gridTemplateColumns: "270px 1fr 340px",
+background:
+"radial-gradient(circle at center, #063764 0%, #020617 48%, #000 100%)",
+color: "white",
 fontFamily: "Arial",
 },
 sidebar: {
 padding: 28,
-background: "rgba(2,6,23,.85)",
+background: "rgba(2,6,23,.9)",
 borderRight: "1px solid rgba(0,213,255,.25)",
 },
-logo: { fontSize: 28, margin: 0 },
-small: { color: "#94a3b8", marginBottom: 40 },
+logo: {
+fontSize: 30,
+margin: 0,
+},
+subtitle: {
+color: "#7dd3fc",
+marginBottom: 40,
+},
 nav: {
 display: "flex",
 flexDirection: "column",
 gap: 20,
-color: "#cbd5e1",
 fontSize: 17,
+color: "#dbeafe",
 },
 center: {
-textAlign: "center",
 padding: 40,
+textAlign: "center",
 },
-title: { fontSize: 46, marginBottom: 8 },
-subtitle: { color: "#7dd3fc", fontSize: 18 },
+title: {
+fontSize: 48,
+marginBottom: 8,
+},
+desc: {
+color: "#93c5fd",
+fontSize: 18,
+},
+avatarBox: {
+display: "flex",
+justifyContent: "center",
+marginTop: 35,
+},
 avatar: {
 width: 430,
 height: 430,
 objectFit: "cover",
 borderRadius: "50%",
-marginTop: 30,
-boxShadow: "0 0 120px #00d5ff",
 border: "4px solid rgba(0,213,255,.35)",
+boxShadow: "0 0 120px #00d5ff",
 },
-mic: {
+button: {
 marginTop: 30,
-fontSize: 26,
+fontSize: 24,
 padding: "18px 42px",
 borderRadius: 18,
 background: "#0b84ff",
@@ -158,20 +183,29 @@ border: "none",
 cursor: "pointer",
 boxShadow: "0 0 45px #0b84ff",
 },
-box: {
+responseBox: {
 marginTop: 35,
-background: "rgba(15,23,42,.9)",
+background: "rgba(15,23,42,.92)",
 padding: 28,
 borderRadius: 20,
 border: "1px solid rgba(0,213,255,.25)",
 textAlign: "left",
 },
-label: { color: "#94a3b8", marginTop: 16 },
-userText: { color: "#7dd3fc", fontSize: 22 },
-answer: { fontSize: 23, lineHeight: 1.6 },
-panel: {
+label: {
+color: "#94a3b8",
+marginTop: 12,
+},
+command: {
+color: "#7dd3fc",
+fontSize: 22,
+},
+answer: {
+fontSize: 23,
+lineHeight: 1.6,
+},
+rightPanel: {
 padding: 28,
-background: "rgba(2,6,23,.85)",
+background: "rgba(2,6,23,.9)",
 borderLeft: "1px solid rgba(0,213,255,.25)",
 display: "flex",
 flexDirection: "column",
