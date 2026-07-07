@@ -4,12 +4,16 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Dashboard() {
 const [texto, setTexto] = useState("");
-const [resposta, setResposta] = useState(
-"NeuroTwin operacional. Aguardando comando estratégico."
-);
+const [resposta, setResposta] = useState("NeuroTwin operacional. Aguardando comando estratégico.");
+const [observatorio, setObservatorio] = useState<any>(null);
 const recognitionRef = useRef<any>(null);
 
 useEffect(() => {
+fetch("/api/observatorio")
+.then((res) => res.json())
+.then((data) => setObservatorio(data))
+.catch(() => setObservatorio(null));
+
 const SpeechRecognition =
 (window as any).SpeechRecognition ||
 (window as any).webkitSpeechRecognition;
@@ -37,14 +41,14 @@ body: JSON.stringify({ message: frase }),
 });
 
 const data = await r.json();
-const reply = data.reply || data.answer || "Resposta não encontrada.";
+const reply = data.reply || "Resposta não encontrada.";
 
 setResposta(reply);
 
 const voz = new SpeechSynthesisUtterance(reply);
 voz.lang = "pt-BR";
-speechSynthesis.cancel();
-speechSynthesis.speak(voz);
+window.speechSynthesis.cancel();
+window.speechSynthesis.speak(voz);
 } catch {
 setResposta("Falha ao consultar o núcleo operacional.");
 }
@@ -76,17 +80,13 @@ return (
 
 <section style={styles.center}>
 <h2 style={styles.title}>Painel Operacional</h2>
-<p style={styles.desc}>
-Monitoramento, análise, previsão e decisão assistida por IA.
-</p>
+<p style={styles.desc}>Monitoramento, análise, previsão e decisão assistida por IA.</p>
 
 <div style={styles.avatarBox}>
 <img src="/avatar-neuro.png" alt="NeuroTwin" style={styles.avatar} />
 </div>
 
-<button onClick={ouvir} style={styles.button}>
-🎙 Comando de Voz
-</button>
+<button onClick={ouvir} style={styles.button}>🎙 Comando de Voz</button>
 
 <div style={styles.responseBox}>
 <p style={styles.label}>Comando recebido:</p>
@@ -98,10 +98,10 @@ Monitoramento, análise, previsão e decisão assistida por IA.
 </section>
 
 <aside style={styles.rightPanel}>
-<Card title="Status do Sistema" value="Operacional" />
-<Card title="Alertas Críticos" value="0" />
-<Card title="Oportunidades" value="24 detectadas" />
-<Card title="Fontes Monitoradas" value="12 módulos" />
+<Card title="Status Global" value={observatorio?.status || "Carregando"} />
+<Card title="Países Monitorados" value={`${observatorio?.paisesMonitorados || 0}`} />
+<Card title="Alertas Ativos" value={`${observatorio?.alertas?.length || 0}`} />
+<Card title="Módulos Ativos" value={`${observatorio?.modulos?.length || 0}`} />
 <Card title="Relatórios" value="Prontos para emissão" />
 </aside>
 </main>
@@ -122,8 +122,7 @@ page: {
 minHeight: "100vh",
 display: "grid",
 gridTemplateColumns: "270px 1fr 340px",
-background:
-"radial-gradient(circle at center, #063764 0%, #020617 48%, #000 100%)",
+background: "radial-gradient(circle at center, #063764 0%, #020617 48%, #000 100%)",
 color: "white",
 fontFamily: "Arial",
 },
@@ -132,14 +131,8 @@ padding: 28,
 background: "rgba(2,6,23,.9)",
 borderRight: "1px solid rgba(0,213,255,.25)",
 },
-logo: {
-fontSize: 30,
-margin: 0,
-},
-subtitle: {
-color: "#7dd3fc",
-marginBottom: 40,
-},
+logo: { fontSize: 30, margin: 0 },
+subtitle: { color: "#7dd3fc", marginBottom: 40 },
 nav: {
 display: "flex",
 flexDirection: "column",
@@ -147,18 +140,9 @@ gap: 20,
 fontSize: 17,
 color: "#dbeafe",
 },
-center: {
-padding: 40,
-textAlign: "center",
-},
-title: {
-fontSize: 48,
-marginBottom: 8,
-},
-desc: {
-color: "#93c5fd",
-fontSize: 18,
-},
+center: { padding: 40, textAlign: "center" },
+title: { fontSize: 48, marginBottom: 8 },
+desc: { color: "#93c5fd", fontSize: 18 },
 avatarBox: {
 display: "flex",
 justifyContent: "center",
@@ -191,18 +175,9 @@ borderRadius: 20,
 border: "1px solid rgba(0,213,255,.25)",
 textAlign: "left",
 },
-label: {
-color: "#94a3b8",
-marginTop: 12,
-},
-command: {
-color: "#7dd3fc",
-fontSize: 22,
-},
-answer: {
-fontSize: 23,
-lineHeight: 1.6,
-},
+label: { color: "#94a3b8", marginTop: 12 },
+command: { color: "#7dd3fc", fontSize: 22 },
+answer: { fontSize: 23, lineHeight: 1.6 },
 rightPanel: {
 padding: 28,
 background: "rgba(2,6,23,.9)",
