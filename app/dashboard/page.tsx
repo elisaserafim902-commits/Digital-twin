@@ -76,7 +76,7 @@ style={{
 display: "flex",
 justifyContent: "center",
 marginTop: 30,
-marginBottom: 30,
+marginBottom: 40,
 }}
 >
 <img
@@ -87,8 +87,9 @@ width: 430,
 height: 430,
 objectFit: "cover",
 borderRadius: "50%",
-boxShadow: "0 0 120px #00d5ff",
-border: "4px solid rgba(0,213,255,.35)",
+boxShadow: "0 0 40px #00d5ff",0 0 90px rgba(0,120,255,.7)",
+border: "3px solid rgba(0,213,255,.35)",
+animation: "pulse 4s infinite ease-in-out",
 }}
 />
 </div>
