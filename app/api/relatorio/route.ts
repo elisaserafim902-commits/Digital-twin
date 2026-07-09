@@ -1,22 +1,22 @@
 import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
-const { theme } = await req.json()
+const { tema } = await req.json()
 
 return NextResponse.json({
-Title: "NEUROTWIN 2050 EXECUTIVE REPORT"
-Topic: Institutional Analysis
-Status: "Operational"
-summary:
-"NeuroTwin 2050 is structured as an operational intelligence platform to support public decision-making."
-Risks: ["Climate", "Infrastructure", "Economy", "Urban Management"]
-recommendations: [
-"Prioritize the Global Observatory"
-"Integrate official public databases"
-"Create dashboards by government sector"
-"Generate automatic reports by municipality and state"
+titulo: "RELATÓRIO EXECUTIVO NEUROTWIN 2050",
+tema: tema || "Análise Institucional",
+status: "OPERACIONAL",
+resumo:
+"O NeuroTwin 2050 está estruturado como plataforma de inteligência operacional para apoio à decisão pública.",
+riscos: ["Clima", "Infraestrutura", "Economia", "Gestão urbana"],
+recomendacoes: [
+"Priorizar Observatório Global",
+"Integrar bases públicas oficiais",
+"Criar painéis por setor governamental",
+"Gerar relatórios automáticos por município e estado"
 ],
-conclusion:
-"The platform has potential for use in Civil Defense, urban planning, territorial monitoring, and strategic management."
+conclusao:
+"A plataforma possui potencial para uso em Defesa Civil, planejamento urbano, monitoramento territorial e gestão estratégica."
 })
 }

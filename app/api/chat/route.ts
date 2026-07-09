@@ -1,52 +1,100 @@
-import { NextResponse } from "next/server"
+notepad app\api\chat\route.ts
+
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-const { message } = await req.json()
-const texto = String(message || "").toLowerCase()
+const { message } = await req.json();
+const text = String(message || "").toLowerCase();
 
-let reply = `ANÁLISE NEUROTWIN 2050
+let reply = "";
 
-Comando recebido: ${message}
+if (text.includes("modules") || text.includes("modules")) {
+reply = `NEUROTWIN 2050 ACTIVE MODULES`
 
-Situação:
-Sistema operacional ativo.
-
-Risco:
-Baixo.
-
-Recomendação:
-Prosseguir com a análise estratégica e registrar o comando no núcleo operacional.`
-
-if (texto.includes("relatório")) {
-reply = `RELATÓRIO ESTRATÉGICO
+1. Cognitive Center
+2. Global Observatory
+3. Strategic Alerts
+4. Executive Reports
+5. Opportunity Radar
+6. Global Trends
+7. Institutional NeuroCore
+8. Voice Command
 
 Status:
-NeuroTwin operacional.
+All main modules are operational for demonstration.
+} else if (text.includes("alert")) {
+reply = `STRATEGIC ALERTS
 
-Observatório:
-Pronto para integração com dados globais.
+Overall status:
+Operational.
 
-Alertas:
-Nenhum alerta crítico ativo.
+Active alerts:
+1. Climate: moderate level in Southern Brazil.
+2. Economy: pay attention to global markets.
+3. Infrastructure: preventive monitoring.
+4. Observatory: continuous monitoring.
 
-Projetos:
-Digital Twin, Vidraçaria Nazaré e Nexa em acompanhamento.
+Critical level:
+No active emergencies.
+} else if (text.includes("report") || text.includes("report")) {
+reply = `NEUROTWIN 2050 EXECUTIVE REPORT`
 
-Recomendação:
-Priorizar demonstração institucional e módulo de Observatório Global.`
+Summary:
+The system is operational and ready for institutional demonstration.
+
+Applications:
+Civil defense, urban management, climate, infrastructure, economy, strategic projects and support for public decision-making.
+
+Recommendation:
+Introducing NeuroTwin as a national operational intelligence platform with modular expansion.
+} else if (text.includes("government")) {
+reply = `ANALYSIS FOR GOVERNMENT
+
+NeuroTwin 2050 can be presented as a strategic intelligence platform to support public decision-making.
+
+Key differentiators:
+Data integration, conversational AI, global observatory, executive reporting, and risk monitoring.
+
+Next action:
+Consolidate the demonstration across three screens: Dashboard, Global Observatory, and Executive Reports.
+} else if (text.includes("status")) {
+reply = `OPERATIONAL STATUS`
+
+System:
+Online.
+
+AI:
+Active.
+
+Voice:
+Operational.
+
+Observatory:
+Online.
+
+Reports:
+Available.
+
+Risk:
+Low.
+
+Readiness:
+High for demonstration.`;
+} else {
+reply = `NEUROTWIN 2050 ANALYSIS`
+
+Command received:
+${message}
+
+Situation:
+Active operating system.
+
+Risk:
+Low.
+
+Recommendation:
+Proceed with strategic analysis and direct the command to the corresponding module.
 }
 
-if (texto.includes("governo")) {
-reply = `ANÁLISE INSTITUCIONAL
-
-O NeuroTwin 2050 pode ser apresentado como uma plataforma de inteligência estratégica para apoio à decisão pública.
-
-Aplicações:
-Defesa Civil, gestão urbana, monitoramento climático, projetos estratégicos, relatórios executivos e observatório global.
-
-Próxima ação:
-Estruturar demonstração com dashboard, alertas e relatórios.`
-}
-
-return NextResponse.json({ reply })
+return NextResponse.json({ reply });
 }
