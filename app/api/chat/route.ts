@@ -5,96 +5,106 @@ try {
 const body = await req.json();
 
 const message = String(
-body.message ||
-body.message ||
-""
+body.message ?? body.mensagem ?? ""
 ).trim();
 
-const text = message.toLowerCase();
+if (!message) {
+return NextResponse.json(
+{
+status: "error",
+reply: "Nenhum comando foi informado.",
+},
+{ status: 400 }
+);
+}
 
-let reply = "";
+const text = message.toLowerCase();
+let reply: string;
 
 if (
-text.includes("modules") ||
-text.includes("modules") ||
-text.includes("module") ||
-text.includes("module")
+text.includes("modulo") ||
+text.includes("módulo")
 ) {
-reply = `NEUROTWIN 2050 — OPERATIONAL MODULES
+reply = `NEUROTWIN 2050 - MODULOS OPERACIONAIS
 
-1. Cognitive Center
-2. Global Observatory
-3. Strategic Alerts
-4. Executive Reports
-5. Opportunity Radar
-6. Global Trends
+1. Centro Cognitivo
+2. Observatorio Global
+3. Alertas Estrategicos
+4. Relatorios Executivos
+5. Radar de Oportunidades
+6. Tendencias Globais
 7. NeuroCore
-8. Voice Command
+8. Comando de Voz
 
-Status:
-Active operational core.
+Status: nucleo operacional ativo.`;
 } else if (
+text.includes("terremoto") ||
 text.includes("earthquake") ||
-text.includes("cataclysm") ||
-text.includes("disaster")
+text.includes("cataclismo") ||
+text.includes("desastre")
 ) {
-reply = `NEUROTWIN OBSERVATORY
+reply = `OBSERVATORIO NEUROTWIN 2050
 
-The natural events module is prepared to query external data from the Observatory.
+Modulo de eventos naturais identificado.
 
-Integrated sources:
-USGS — earthquakes.
-NASA EONET — natural events.
+Fontes de dados configuradas:
+- USGS para atividade sismica
+- NASA EONET para eventos naturais
 
-For current data, please refer to the Global Observatory module.
+A consulta de eventos reais deve ser executada pelo Observatorio Global.
+
+Importante: o NeuroTwin deve diferenciar dados confirmados, alertas oficiais, estimativas e previsoes.`;
 } else if (
-text.includes("alert") ||
-text.includes("alerts")
+text.includes("alerta") ||
+text.includes("alert")
 ) {
-reply = `NEUROTWIN ALERTS`
+reply = `CENTRO DE ALERTAS NEUROTWIN 2050
 
-The system has the structure to consolidate natural and strategic alerts.
+Estrutura de classificacao:
+- fonte
+- data e hora
+- localizacao
+- categoria
+- severidade
+- confiabilidade
+- status
 
-The information should be sorted by:
-- source;
-- time;
-- location;
-- severity;
-- status;
-- reliability.`;
-} else if (
-text.includes("status")
-) {
+Nenhum alerta deve ser apresentado como real sem dados provenientes de fonte externa validada.`;
+} else if (text.includes("status")) {
 reply = `STATUS NEUROTWIN 2050
 
-Chat API: operational.
-Observatory: integrated.
-Voice command: available on the dashboard.
-Reports: module available.
-NeuroCore: evolving.
+API de conversacao: operacional
+Nucleo de comandos: operacional
+Observatorio Global: integrado ao projeto
+USGS: fonte configurada
+NASA EONET: fonte configurada
+Comando de voz: interface disponivel
 
-Next priority:
-Connect more real-world sources and validate each integration.
+Status geral: nucleo em desenvolvimento e validacao.`;
 } else {
 reply = `NEUROTWIN 2050
 
-Command received:
-${message || "No command entered."}
+Comando recebido:
+${message}
 
-The core is operational and awaiting direction to the corresponding module.
+O comando foi recebido pelo nucleo operacional.
+
+Ainda nao existe uma fonte externa associada a esta pergunta. O sistema nao ira inventar uma resposta.`;
 }
 
 return NextResponse.json({
 status: "ok",
+timestamp: new Date().toISOString(),
+message,
 reply,
 });
 } catch (error) {
-console.error("NeuroTwin chat error:", error);
+console.error("NeuroTwin API error:", error);
 
 return NextResponse.json(
 {
 status: "error",
-Reply: "Internal error in the conversation core."
+reply: "Falha interna no nucleo NeuroTwin.",
 },
 { status: 500 }
 );
