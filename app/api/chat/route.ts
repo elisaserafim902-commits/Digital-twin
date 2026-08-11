@@ -1,15 +1,26 @@
-notepad app\api\chat\route.ts
-
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-const { message } = await req.json();
-const text = String(message || "").toLowerCase();
+try {
+const body = await req.json();
+
+const message = String(
+body.message ||
+body.message ||
+""
+).trim();
+
+const text = message.toLowerCase();
 
 let reply = "";
 
-if (text.includes("modules") || text.includes("modules")) {
-reply = `NEUROTWIN 2050 ACTIVE MODULES`
+if (
+text.includes("modules") ||
+text.includes("modules") ||
+text.includes("module") ||
+text.includes("module")
+) {
+reply = `NEUROTWIN 2050 — OPERATIONAL MODULES
 
 1. Cognitive Center
 2. Global Observatory
@@ -17,84 +28,75 @@ reply = `NEUROTWIN 2050 ACTIVE MODULES`
 4. Executive Reports
 5. Opportunity Radar
 6. Global Trends
-7. Institutional NeuroCore
+7. NeuroCore
 8. Voice Command
 
 Status:
-All main modules are operational for demonstration.
-} else if (text.includes("alert")) {
-reply = `STRATEGIC ALERTS
+Active operational core.
+} else if (
+text.includes("earthquake") ||
+text.includes("cataclysm") ||
+text.includes("disaster")
+) {
+reply = `NEUROTWIN OBSERVATORY
 
-Overall status:
-Operational.
+The natural events module is prepared to query external data from the Observatory.
 
-Active alerts:
-1. Climate: moderate level in Southern Brazil.
-2. Economy: pay attention to global markets.
-3. Infrastructure: preventive monitoring.
-4. Observatory: continuous monitoring.
+Integrated sources:
+USGS — earthquakes.
+NASA EONET — natural events.
 
-Critical level:
-No active emergencies.
-} else if (text.includes("report") || text.includes("report")) {
-reply = `NEUROTWIN 2050 EXECUTIVE REPORT`
+For current data, please refer to the Global Observatory module.
+} else if (
+text.includes("alert") ||
+text.includes("alerts")
+) {
+reply = `NEUROTWIN ALERTS`
 
-Summary:
-The system is operational and ready for institutional demonstration.
+The system has the structure to consolidate natural and strategic alerts.
 
-Applications:
-Civil defense, urban management, climate, infrastructure, economy, strategic projects and support for public decision-making.
+The information should be sorted by:
+- source;
+- time;
+- location;
+- severity;
+- status;
+- reliability.`;
+} else if (
+text.includes("status")
+) {
+reply = `STATUS NEUROTWIN 2050
 
-Recommendation:
-Introducing NeuroTwin as a national operational intelligence platform with modular expansion.
-} else if (text.includes("government")) {
-reply = `ANALYSIS FOR GOVERNMENT
+Chat API: operational.
+Observatory: integrated.
+Voice command: available on the dashboard.
+Reports: module available.
+NeuroCore: evolving.
 
-NeuroTwin 2050 can be presented as a strategic intelligence platform to support public decision-making.
-
-Key differentiators:
-Data integration, conversational AI, global observatory, executive reporting, and risk monitoring.
-
-Next action:
-Consolidate the demonstration across three screens: Dashboard, Global Observatory, and Executive Reports.
-} else if (text.includes("status")) {
-reply = `OPERATIONAL STATUS`
-
-System:
-Online.
-
-AI:
-Active.
-
-Voice:
-Operational.
-
-Observatory:
-Online.
-
-Reports:
-Available.
-
-Risk:
-Low.
-
-Readiness:
-High for demonstration.`;
+Next priority:
+Connect more real-world sources and validate each integration.
 } else {
-reply = `NEUROTWIN 2050 ANALYSIS`
+reply = `NEUROTWIN 2050
 
 Command received:
-${message}
+${message || "No command entered."}
 
-Situation:
-Active operating system.
-
-Risk:
-Low.
-
-Recommendation:
-Proceed with strategic analysis and direct the command to the corresponding module.
+The core is operational and awaiting direction to the corresponding module.
 }
 
-return NextResponse.json({ reply });
+return NextResponse.json({
+status: "ok",
+reply,
+});
+} catch (error) {
+console.error("NeuroTwin chat error:", error);
+
+return NextResponse.json(
+{
+status: "error",
+Reply: "Internal error in the conversation core."
+},
+{ status: 500 }
+);
+}
 }
