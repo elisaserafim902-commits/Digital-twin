@@ -351,6 +351,10 @@ overflow-wrap: anywhere;
 .globe-section {
 margin-bottom: 18px;
 }
+.nt-data-integrity{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;margin-bottom:18px;border:1px solid rgba(75,160,210,.4);border-radius:13px;background:rgba(3,26,43,.88);font-size:12px;line-height:1.6}
+.nt-data-integrity strong{color:#8de8f5;letter-spacing:.1em;font-size:10px;white-space:nowrap}
+.nt-data-integrity span{color:#b8cede}
+@media(max-width:760px){.nt-data-integrity{flex-direction:column;gap:6px}}
 
 .intel-grid {
 display: grid;
@@ -642,20 +646,20 @@ valor={
 carregando
 ? "..."
 : dados?.status ||
-"offline"
+"indisponível"
 }
 />
 
 <Metric
 titulo="Fontes Online"
-valor={`${fontesOnline}/3`}
+valor={dados ? `${fontesOnline}/3` : "—"}
 />
 
 <Metric
 titulo="Terremotos 24h"
 valor={
 dados?.resumo
-?.terremotos24h ?? 0
+?.terremotos24h ?? "—"
 }
 />
 
@@ -664,7 +668,7 @@ titulo="Terremotos ≥ 4.5"
 valor={
 dados?.resumo
 ?.terremotosFortes24h ??
-0
+"—"
 }
 />
 
@@ -673,7 +677,7 @@ titulo="Eventos NASA"
 valor={
 dados?.resumo
 ?.eventosNaturaisAbertos ??
-0
+"—"
 }
 />
 
@@ -681,10 +685,12 @@ dados?.resumo
 titulo="Eventos GDACS"
 valor={
 dados?.resumo
-?.eventosGDACS ?? 0
+?.eventosGDACS ?? "—"
 }
 />
 </section>
+
+<div className="nt-data-integrity" role="status"><strong>TRANSPARÊNCIA DOS DADOS</strong><span>Última consulta: {dados?.atualizadoEm ? dataFormatada(dados.atualizadoEm) : "aguardando resposta"} · Atualização automática a cada 60 segundos · Fontes: USGS, NASA EONET e GDACS. Eventos e classificações dependem dos dados publicados por cada fonte. Não substitui alertas oficiais de emergência.</span></div>
 
 <section className="globe-section">
 <GloboOperacional
