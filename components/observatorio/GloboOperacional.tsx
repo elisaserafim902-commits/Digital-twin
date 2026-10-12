@@ -1296,9 +1296,14 @@ rel="noopener noreferrer"
 style={{ display: "inline-block", marginTop: 10, color: "#6de4ff" }}
 >Explorar localização no mapa detalhado ↗</a>
 
-<div className="nt-alert">
-Severidade operacional:{" "}
-{selecionado.severidade}/10
+<div className="nt-alert" role="status" aria-live="polite">
+<strong>NEUROTWIN GEOALERT · TRIAGEM INFORMATIVA</strong>
+<p style={{margin:"8px 0",color:"#fff",fontWeight:800}}>
+{selecionado.nivelAlerta?.toLowerCase() === "red" ? "PRIORIDADE CRÍTICA · GDACS" : selecionado.nivelAlerta?.toLowerCase() === "orange" ? "PRIORIDADE ELEVADA · GDACS" : selecionado.severidade >= 8 ? "ATENÇÃO ELEVADA · CRITÉRIO INTERNO" : "ACOMPANHAMENTO · CRITÉRIO INTERNO"}
+</p>
+<p>Índice interno de triagem: {selecionado.severidade}/10 · Fonte: {selecionado.fonte}</p>
+<p>Evento localizado nas coordenadas informadas. A proximidade geográfica, isoladamente, não determina impactos nem área de risco.</p>
+<p style={{fontSize:11}}>Confirme alertas e orientações com a Defesa Civil e os órgãos oficiais competentes. Este painel não emite alertas públicos de emergência.</p>
 </div>
 </div>
 )}
