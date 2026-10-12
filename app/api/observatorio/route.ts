@@ -99,10 +99,10 @@ eventosNaturais: [],
 eventosGDACS: [],
 
 resumo: {
-terremotos24h: 0,
-terremotosFortes24h: 0,
-eventosNaturaisAbertos: 0,
-eventosGDACS: 0,
+terremotos24h: null,
+terremotosFortes24h: null,
+eventosNaturaisAbertos: null,
+eventosGDACS: null,
 },
 };
 
@@ -132,7 +132,7 @@ id: item?.id || null,
 magnitude:
 typeof item?.properties?.mag === "number"
 ? item.properties.mag
-: 0,
+: null,
 
 local:
 item?.properties?.place ||
@@ -308,7 +308,7 @@ USGS e GDACS continuam funcionando.
 resultado.eventosNaturais = [];
 
 resultado.resumo.eventosNaturaisAbertos =
-0;
+null;
 
 resultado.fontes.nasaEonet = {
 status: "offline",
@@ -390,7 +390,7 @@ atualizadoEm: agora,
 
 resultado.eventosGDACS = [];
 
-resultado.resumo.eventosGDACS = 0;
+resultado.resumo.eventosGDACS = null;
 }
 
 /*
