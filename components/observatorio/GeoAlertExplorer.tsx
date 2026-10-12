@@ -10,6 +10,10 @@ const [escalaKm, setEscalaKm] = useState<5 | 25 | 100>(25);
 const [modo,setModo] = useState<"mapa"|"satelite">("mapa");
 const [janelaHoras,setJanelaHoras] = useState<24|168|0>(0);
 const [comparar,setComparar] = useState(false);
+const [agora,setAgora] = useState(()=>Date.now());
+const registroMs = horario == null ? NaN : new Date(horario).getTime();
+const idadeHoras = Number.isFinite(registroMs) ? Math.max(0,(agora-registroMs)/3600000) : null;
+const observacao = idadeHoras===null ? "SEM HORÁRIO VERIFICÁVEL" : idadeHoras<=1 ? "REGISTRO NA ÚLTIMA HORA" : idadeHoras<=24 ? "REGISTRO NAS ÚLTIMAS 24H" : "REGISTRO HISTÓRICO";
 const proximosFiltrados = proximos.filter(e => janelaHoras===0 || (e.horario != null && Number.isFinite(new Date(e.horario).getTime()) && new Date(e.horario).getTime() >= Date.now()-janelaHoras*3600000));
 const valid = Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180;
 if(!valid)return <p>Coordenadas indisponíveis para este evento.</p>;
@@ -26,6 +30,13 @@ return <section aria-label="GeoAlert Explorer" style={ampliado ? {position:"fixe
 <div style={{display:"flex",gap:8}}><button type="button" onClick={() => setAmpliado(v => !v)} aria-pressed={ampliado} style={{cursor:"pointer",background:"#124365",color:"#fff",border:"1px solid #41718d",borderRadius:7,padding:"5px 9px"}}>{ampliado ? "Reduzir" : "Ampliar mapa"}</button><button type="button" onClick={onClose} aria-label="Fechar mapa detalhado" style={{cursor:"pointer",background:"#12334c",color:"#fff",border:"1px solid #41718d",borderRadius:7,padding:"5px 9px"}}>Fechar</button></div>
 </div>
 <div role="status" style={{borderLeft:`4px solid ${destaque}`,padding:"8px 10px",background:"#092c40",marginBottom:10,borderRadius:6}}><strong style={{fontSize:12,color:destaque}}>● {prioridade}</strong><p style={{fontSize:11,margin:"6px 0 0"}}>{titulo} · {lat.toFixed(4)}, {lng.toFixed(4)} · Fonte: {fonte || "não informada"}</p></div>
+<section aria-label="Monitoramento de atividade" style={{padding:12,background:"#09263a",border:"1px solid #39748e",borderRadius:10,marginBottom:12}}>
+<strong style={{fontSize:12,color:"#8de8ff"}}>MONITORAMENTO MULTIEVENTOS · {observacao}</strong>
+<p style={{fontSize:11,margin:"8px 0"}}>Tipo monitorado: {tipo || "Não identificado"} · Fonte: {fonte || "não informada"}</p>
+<p style={{fontSize:11,margin:"8px 0"}}>{idadeHoras===null ? "Sem data de observação confiável." : `Último registro há aproximadamente ${idadeHoras<1?Math.round(idadeHoras*60)+" minutos":idadeHoras.toFixed(1)+" horas"}.`}</p>
+<button type="button" onClick={()=>setAgora(Date.now())} style={{cursor:"pointer",padding:"6px 10px",border:"1px solid #39748e",borderRadius:7,background:"#124365",color:"#fff"}}>Atualizar idade do registro</button>
+<p style={{fontSize:10,lineHeight:1.5,color:"#a6b9c9",margin:"8px 0 0"}}>O horário recente NÃO comprova que o fenômeno permanece ativo. A atividade em curso depende de confirmação específica da fonte oficial; imagens de satélite de referência não são ao vivo.</p>
+</section>
 <section aria-label="Análise geográfica" style={{padding:12,background:"#081f32",border:"1px solid #244c65",borderRadius:10,marginBottom:12}}>
 <strong style={{color:"#8de8ff",fontSize:12}}>ANÁLISE GEOGRÁFICA · DADOS OBSERVADOS</strong>
 <p style={{fontSize:12,margin:"8px 0"}}>Tipo: {tipo || "Não informado"}{typeof magnitude==="number" && Number.isFinite(magnitude) ? ` · Magnitude: ${magnitude.toFixed(1)}` : ""}</p>
