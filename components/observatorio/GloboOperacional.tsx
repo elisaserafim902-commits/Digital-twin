@@ -761,14 +761,18 @@ controls.autoRotateSpeed = 0.22;
 controls.enableDamping = true;
 }
 
-globe.pointOfView(
-{
-lat: 8,
-lng: -30,
-altitude: 2,
-},
-0
-);
+const params = new URLSearchParams(window.location.search);
+const latText = params.get("lat");
+const lngText = params.get("lng");
+const lat = latText === null ? NaN : Number(latText);
+const lng = lngText === null ? NaN : Number(lngText);
+const hasFocus = params.get("focus") === "earthquake" && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
+if (hasFocus) {
+if (controls) controls.autoRotate = false;
+globe.pointOfView({lat, lng, altitude: 0.62}, 0);
+} else {
+globe.pointOfView({lat: 8, lng: -30, altitude: 2}, 0);
+}
 }
 
 return (
