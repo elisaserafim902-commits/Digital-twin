@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import { GET as consultarObservatorio } from "../../observatorio/route";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -40,6 +41,18 @@ export async function GET(request: NextRequest) {
       eventosExibidos:data?.geo?.total ?? null,
       limitacoes:"Verificação pontual. Não armazena histórico, não envia notificações e não comprova atividade ao vivo."
     };
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({...resultado,status:"configuracao_pendente",erro:"DATABASE_URL ausente; observação não persistida"},{status:503});
+    }
+    const prisma = new PrismaClient();
+    try {
+      await prisma.observatorySnapshot.create({data:{
+        status, totalEvents:data?.geo?.total ?? 0,
+        sourcesJson:JSON.stringify(verificadas),summaryJson:JSON.stringify(resumo)
+      }});
+    } finally {
+      await prisma.$disconnect();
+    }
     console.info("[NeuroTwin Autonomous Core]",JSON.stringify(resultado));
     return NextResponse.json(resultado,{status:status==="indisponivel"?503:200,headers:{"Cache-Control":"no-store"}});
   } catch(error) {
