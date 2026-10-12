@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import GeoAlertExplorer from "./GeoAlertExplorer";
 import {
 useCallback,
 useEffect,
@@ -230,6 +231,7 @@ focoExterno = null,
 const globeRef = useRef<any>(null);
 
 const [camadaSatelite, setCamadaSatelite] = useState<"nasa" | "padrao">("nasa");
+const [exploradorAberto, setExploradorAberto] = useState(false);
 const [selecionado, setSelecionado] =
 useState<Evento | null>(null);
 
@@ -619,6 +621,7 @@ const selecionarEvento = useCallback(
 (evento: Evento) => {
 setPontoLocal(null);
 setSelecionado(evento);
+setExploradorAberto(false);
 setRotacao(false);
 
 moverCamera(
@@ -1289,12 +1292,8 @@ Coordenadas:{" "}
 </p>
 
 <p>Fonte: {selecionado.fonte}</p>
-<a
-href={`https://www.openstreetmap.org/?mlat=${selecionado.lat}&mlon=${selecionado.lng}#map=12/${selecionado.lat}/${selecionado.lng}`}
-target="_blank"
-rel="noopener noreferrer"
-style={{ display: "inline-block", marginTop: 10, color: "#6de4ff" }}
->Explorar localização no mapa detalhado ↗</a>
+<button type="button" onClick={() => setExploradorAberto((v) => !v)} style={{display:"inline-block",marginTop:10,padding:"9px 12px",borderRadius:9,border:"1px solid #1d9cd0",background:"#073451",color:"#b8f2ff",cursor:"pointer"}}>{exploradorAberto ? "Ocultar mapa detalhado" : "Explorar localização no NeuroTwin"}</button>
+{exploradorAberto && <GeoAlertExplorer lat={selecionado.lat} lng={selecionado.lng} titulo={selecionado.titulo} onClose={() => setExploradorAberto(false)}/>}
 
 <div className="nt-alert" role="status" aria-live="polite">
 <strong>NEUROTWIN GEOALERT · TRIAGEM INFORMATIVA</strong>
