@@ -266,7 +266,7 @@ return;
 const lng = Number(item.coordenadas[0]);
 const lat = Number(item.coordenadas[1]);
 
-if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
 return;
 }
 
@@ -328,7 +328,7 @@ return;
 const lng = Number(coordenadas[0]);
 const lat = Number(coordenadas[1]);
 
-if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
 return;
 }
 
@@ -378,7 +378,7 @@ return;
 const lng = Number(item.coordenadas[0]);
 const lat = Number(item.coordenadas[1]);
 
-if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
 return;
 }
 
@@ -756,7 +756,7 @@ return;
 const controls = globe.controls?.();
 
 if (controls) {
-controls.autoRotate = true;
+controls.autoRotate = rotacao;
 controls.autoRotateSpeed = 0.22;
 controls.enableDamping = true;
 }
