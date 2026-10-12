@@ -47,6 +47,7 @@ type Props = {
 terremotos?: any[];
 eventosNaturais?: any[];
 eventosGDACS?: any[];
+focoExterno?: { lat: number; lng: number; id: number } | null;
 };
 
 type PontoLocal = {
@@ -224,6 +225,7 @@ export default function GloboOperacional({
 terremotos = [],
 eventosNaturais = [],
 eventosGDACS = [],
+focoExterno = null,
 }: Props) {
 const globeRef = useRef<any>(null);
 
@@ -586,6 +588,31 @@ altitude,
 },
 []
 );
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("focus") !== "earthquake") return;
+  const latParam = params.get("lat");
+  const lngParam = params.get("lng");
+  if (latParam === null || lngParam === null) return;
+  const lat = Number(latParam);
+  const lng = Number(lngParam);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return;
+  setRotacao(false);
+  setPontoLocal({ lat, lng });
+  moverCamera(lat, lng, 0.62);
+}, [moverCamera]);
+
+useEffect(() => {
+  if (!focoExterno) return;
+  const { lat, lng } = focoExterno;
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return;
+  setSelecionado(null);
+  setIndiceCritico(-1);
+  setRotacao(false);
+  setPontoLocal({ lat, lng });
+  moverCamera(lat, lng, 0.62);
+}, [focoExterno, moverCamera]);
 
 const selecionarEvento = useCallback(
 (evento: Evento) => {
