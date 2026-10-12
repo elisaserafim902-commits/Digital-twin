@@ -79,6 +79,12 @@ data.resposta ||
 
 setResposta(reply);
 
+if (data.action?.type === "FOCUS_GLOBE" && Number.isFinite(data.action.lat) && Number.isFinite(data.action.lng)) {
+  const params = new URLSearchParams({ lat: String(data.action.lat), lng: String(data.action.lng), evento: String(data.event?.place || "Terremoto USGS") });
+  window.location.assign("/dashboard/observatorio?" + params.toString());
+  return;
+}
+
 if ("speechSynthesis" in window) {
 const voz = new SpeechSynthesisUtterance(reply);
 
