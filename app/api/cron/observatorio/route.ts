@@ -1,3 +1,4 @@
+import { GET as consultarObservatorio } from "../../observatorio/route";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -5,6 +6,7 @@ export const maxDuration = 30;
 
 /**
  * Autonomous Core v0.1 — execução programada e supervisionável.
+ * Executa consulta interna sem depender de hostname recebido do cliente.
  * Não envia alertas nem persiste histórico até haver armazenamento confiável.
  */
 export async function GET(request: NextRequest) {
@@ -15,11 +17,7 @@ export async function GET(request: NextRequest) {
   }
   const started = Date.now();
   try {
-    const response = await fetch(new URL("/api/observatorio", request.url), {
-      cache:"no-store",
-      signal:AbortSignal.timeout(24000),
-      headers:{"accept":"application/json"}
-    });
+    const response = await consultarObservatorio();
     if (!response.ok) throw new Error(`Observatório HTTP ${response.status}`);
     const data = await response.json();
     const fontes = data?.fontes || {};
