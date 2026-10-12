@@ -3,11 +3,14 @@
 import { useState } from "react";
 import MapaGeoAlert from "./MapaGeoAlert";
 
-type Props = {lat:number;lng:number;titulo:string;severidade?:number;nivelAlerta?:string;fonte?:string;horario?:string|number;tipo?:string;magnitude?:number;proximos?:{id:string;titulo:string;fonte:string;distanciaKm:number}[];onClose:()=>void};
+type Props = {lat:number;lng:number;titulo:string;severidade?:number;nivelAlerta?:string;fonte?:string;horario?:string|number;tipo?:string;magnitude?:number;proximos?:{id:string;titulo:string;fonte:string;distanciaKm:number;horario?:string|number;tipo?:string}[];onClose:()=>void};
 export default function GeoAlertExplorer({lat,lng,titulo,severidade,nivelAlerta,fonte,horario,tipo,magnitude,proximos=[],onClose}:Props){
 const [ampliado, setAmpliado] = useState(false);
 const [escalaKm, setEscalaKm] = useState<5 | 25 | 100>(25);
 const [modo,setModo] = useState<"mapa"|"satelite">("mapa");
+const [janelaHoras,setJanelaHoras] = useState<24|168|0>(0);
+const [comparar,setComparar] = useState(false);
+const proximosFiltrados = proximos.filter(e => janelaHoras===0 || (e.horario != null && Number.isFinite(new Date(e.horario).getTime()) && new Date(e.horario).getTime() >= Date.now()-janelaHoras*3600000));
 const valid = Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180;
 if(!valid)return <p>Coordenadas indisponíveis para este evento.</p>;
 const oficial = String(nivelAlerta || "").toLowerCase();
@@ -27,9 +30,12 @@ return <section aria-label="GeoAlert Explorer" style={ampliado ? {position:"fixe
 <strong style={{color:"#8de8ff",fontSize:12}}>ANÁLISE GEOGRÁFICA · DADOS OBSERVADOS</strong>
 <p style={{fontSize:12,margin:"8px 0"}}>Tipo: {tipo || "Não informado"}{typeof magnitude==="number" && Number.isFinite(magnitude) ? ` · Magnitude: ${magnitude.toFixed(1)}` : ""}</p>
 <p style={{fontSize:12,margin:"6px 0"}}>Registro: {horario && !Number.isNaN(new Date(horario).getTime()) ? new Date(horario).toLocaleString("pt-BR") : "Horário não disponível"}</p>
-<p style={{fontSize:12,margin:"6px 0"}}>Eventos adicionais próximos (até 100 km): <strong>{proximos.length}</strong></p>
-{proximos.length>0 && <ul style={{paddingLeft:18,margin:"8px 0",fontSize:11,lineHeight:1.7}}>{proximos.slice(0,5).map(e=><li key={e.id}>{e.titulo} · {e.distanciaKm.toFixed(1)} km · {e.fonte}</li>)}</ul>}
-<p style={{fontSize:10,color:"#aac3d2",lineHeight:1.5,margin:"8px 0 0"}}>Distâncias calculadas entre coordenadas reportadas. Contagem limitada aos eventos carregados no observatório, não representa cobertura completa, correlação causal nem estimativa de impacto.</p>
+<p style={{fontSize:12,margin:"6px 0"}}>Eventos adicionais próximos (até 100 km): <strong>{proximosFiltrados.length}</strong></p>
+<div aria-label="Filtro temporal" style={{display:"flex",flexWrap:"wrap",gap:6,margin:"9px 0"}}>{([{horas:0,nome:"Todos carregados"},{horas:24,nome:"24 horas"},{horas:168,nome:"7 dias"}] as const).map(f=><button key={f.horas} type="button" aria-pressed={janelaHoras===f.horas} onClick={()=>setJanelaHoras(f.horas)} style={{cursor:"pointer",fontSize:11,padding:"5px 8px",borderRadius:7,color:"#fff",background:janelaHoras===f.horas?"#176e90":"#0a3047",border:"1px solid #39748e"}}>{f.nome}</button>)}</div>
+{proximosFiltrados.length>0 && <ul style={{paddingLeft:18,margin:"8px 0",fontSize:11,lineHeight:1.7}}>{proximosFiltrados.slice(0,5).map(e=><li key={e.id}>{e.titulo} · {e.distanciaKm.toFixed(1)} km · {e.fonte}</li>)}</ul>}
+<button type="button" aria-expanded={comparar} onClick={()=>setComparar(v=>!v)} style={{cursor:"pointer",fontSize:11,padding:"7px 10px",borderRadius:7,color:"#fff",background:"#124365",border:"1px solid #39748e"}}>{comparar?"Ocultar comparação":"Comparar fontes próximas"}</button>
+{comparar && <div style={{fontSize:11,marginTop:9,lineHeight:1.8}}>{Array.from(new Set(proximosFiltrados.map(e=>e.fonte))).map(f=><p key={f} style={{margin:0}}>{f}: {proximosFiltrados.filter(e=>e.fonte===f).length} evento(s)</p>)}{proximosFiltrados.length===0 && <p>Nenhum evento disponível para comparar neste filtro.</p>}</div>}
+<p style={{fontSize:10,color:"#aac3d2",lineHeight:1.5,margin:"8px 0 0"}}>Distâncias calculadas entre coordenadas reportadas. Filtros temporais usam o horário fornecido pela fonte e excluem registros sem horário válido. Contagem limitada aos eventos carregados no observatório, não representa cobertura completa, correlação causal nem estimativa de impacto.</p>
 </section>
 <div aria-label="Escala de exploração" style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginBottom:10}}><span style={{fontSize:11,color:"#9ab8cc"}}>Área de visualização:</span>{([5,25,100] as const).map(km => <button key={km} type="button" aria-pressed={escalaKm === km} onClick={() => setEscalaKm(km)} style={{cursor:"pointer",padding:"6px 10px",borderRadius:8,border:"1px solid #39748e",background:escalaKm===km?"#176e90":"#0a3047",color:"#fff",fontSize:11}}>{km} km</button>)}</div>
 <div style={{display:"flex",gap:8,marginBottom:10}}><button type="button" aria-pressed={modo==="mapa"} onClick={()=>setModo("mapa")} style={{cursor:"pointer",padding:"7px 12px",borderRadius:8,background:modo==="mapa"?"#176e90":"#0a3047",color:"#fff",border:"1px solid #39748e"}}>Mapa</button><button type="button" aria-pressed={modo==="satelite"} onClick={()=>setModo("satelite")} style={{cursor:"pointer",padding:"7px 12px",borderRadius:8,background:modo==="satelite"?"#176e90":"#0a3047",color:"#fff",border:"1px solid #39748e"}}>Satélite</button></div>
