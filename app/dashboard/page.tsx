@@ -1,454 +1,163 @@
-﻿"use client";
+"use client";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { useEffect, useRef, useState } from "react";
+const links = [
+  ["Centro Cognitivo", "/dashboard"],
+  ["Observatório Global", "/dashboard/observatorio"],
+  ["Relatórios Executivos", "/dashboard/relatorios"],
+  ["Tendências", "/dashboard/tendencias"],
+  ["Oportunidades", "/dashboard/oportunidades"],
+  ["Alertas Críticos", "/dashboard/alertas"],
+  ["NeuroBot", "/dashboard/neurobot"],
+];
 
 export default function Dashboard() {
-const [texto, setTexto] = useState("");
-const [resposta, setResposta] = useState(
-"NeuroTwin operacional. Aguardando comando estratégico."
-);
-const [observatorio, setObservatorio] = useState<any>(null);
-const recognitionRef = useRef<any>(null);
-const [destino, setDestino] = useState<string | null>(null);
+  const [comando, setComando] = useState("");
+  const [resposta, setResposta] = useState("Sou o Twin, sua interface de inteligência. Pergunte sobre eventos globais, explore cenários ou acesse um dos módulos.");
+  const [estado, setEstado] = useState<"pronto" | "ouvindo" | "analisando">("pronto");
+  const [destino, setDestino] = useState<string | null>(null);
+  const [erroVoz, setErroVoz] = useState("");
+  const recognitionRef = useRef<any>(null);
 
-useEffect(() => {
-fetch("/api/observatorio")
-.then((res) => {
-if (!res.ok) {
-throw new Error(`Observatório HTTP ${res.status}`);
+  const executar = useCallback(async (frase: string) => {
+    const mensagem = frase.trim();
+    if (!mensagem) return;
+    setComando(mensagem);
+    setEstado("analisando");
+    setDestino(null);
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: mensagem }),
+      });
+      if (!response.ok) throw new Error("Serviço temporariamente indisponível");
+      const data = await response.json();
+      const reply = String(data.reply || data.resposta || "Não foi possível obter uma resposta.");
+      setResposta(reply);
+      if (data.action?.type === "FOCUS_GLOBE" && Number.isFinite(data.action.lat) && Number.isFinite(data.action.lng)) {
+        const params = new URLSearchParams({
+          focus: "earthquake",
+          lat: String(data.action.lat),
+          lng: String(data.action.lng),
+        });
+        setDestino("/dashboard/observatorio?" + params.toString());
+      }
+    } catch {
+      setResposta("Não foi possível consultar o núcleo cognitivo. Tente novamente.");
+    } finally {
+      setEstado("pronto");
+    }
+  }, []);
+
+  useEffect(() => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    const recognition = new SpeechRecognition();
+    recognition.lang = "pt-BR";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.onresult = (event: any) => {
+      const frase = event.results?.[0]?.[0]?.transcript || "";
+      if (frase) void executar(frase);
+    };
+    recognition.onerror = () => {
+      setEstado("pronto");
+      setErroVoz("Não foi possível captar sua voz. Utilize o campo de texto.");
+    };
+    recognition.onend = () => setEstado(v => v === "ouvindo" ? "pronto" : v);
+    recognitionRef.current = recognition;
+    return () => { try { recognition.stop(); } catch {} };
+  }, [executar]);
+
+  function ouvir() {
+    if (!recognitionRef.current) {
+      setErroVoz("Reconhecimento de voz não disponível neste navegador. Utilize o campo de texto.");
+      return;
+    }
+    try {
+      setErroVoz("");
+      setEstado("ouvindo");
+      recognitionRef.current.start();
+    } catch {
+      setEstado("pronto");
+      setErroVoz("Não foi possível iniciar o microfone.");
+    }
+  }
+
+  return (
+    <main className="nt-home">
+      <style>{`
+        .nt-home{min-height:100vh;color:#f0f7ff;background:radial-gradient(ellipse at 55% 5%,#14345a 0%,#081426 38%,#040b15 80%);font-family:Inter,system-ui,Arial,sans-serif;display:grid;grid-template-columns:245px minmax(0,1fr)}
+        .nt-side{padding:34px 22px;border-right:1px solid #ffffff19;background:#06111ee8;position:sticky;top:0;height:100vh}
+        .nt-brand{font-size:23px;letter-spacing:.03em;font-weight:850;margin:0}.nt-brand span{color:#5bdfff}.nt-kicker{font-size:10px;letter-spacing:.19em;color:#8cb5d2;text-transform:uppercase;margin-top:8px}
+        .nt-nav{display:grid;gap:7px;margin-top:46px}.nt-nav a{color:#bdd0e3;text-decoration:none;padding:12px;border-radius:10px;font-size:13px;border:1px solid transparent}.nt-nav a:hover,.nt-nav a:first-child{background:#103354;border-color:#2a597d;color:#fff}
+        .nt-content{padding:38px clamp(22px,5vw,78px) 70px;max-width:1500px;width:100%;margin:auto}
+        .nt-overline{color:#61d8ed;font-size:11px;font-weight:750;letter-spacing:.22em;text-transform:uppercase}
+        .nt-hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(220px,.7fr);align-items:center;gap:26px;padding:35px 0 26px}
+        .nt-hero h1{font-size:clamp(34px,4.5vw,67px);letter-spacing:-.055em;line-height:1.06;margin:17px 0 20px;font-weight:820}
+        .nt-hero h1 em{font-style:normal;color:#68ddf2}.nt-lead{font-size:clamp(14px,1.4vw,18px);line-height:1.7;color:#bbcadb;max-width:680px}
+        .nt-origin{font-size:13px;color:#91abc2;line-height:1.7;max-width:650px}
+        .nt-orb-wrap{min-height:250px;display:grid;place-items:center}.nt-orb{width:min(22vw,250px);height:min(22vw,250px);min-width:170px;min-height:170px;border-radius:50%;position:relative;background:radial-gradient(circle at 35% 30%,#6be7ff 0%,#1a72b5 12%,#0a254b 45%,#020a1b 75%);box-shadow:0 0 70px #087cbe77,inset -24px -22px 45px #020a1b,0 0 0 1px #7eeaff45;animation:nt-breathe 5s ease-in-out infinite}
+        .nt-orb:after{content:"";position:absolute;inset:-15px;border-radius:50%;border:1px solid #4ce7fa44;transform:rotateX(65deg) rotate(-25deg)}
+        @keyframes nt-breathe{50%{box-shadow:0 0 100px #087cbeaa,inset -24px -22px 45px #020a1b,0 0 0 1px #7eeaff65}}
+        .nt-card{background:linear-gradient(135deg,#0d2237d9,#091524ed);border:1px solid #31516c80;border-radius:18px;padding:25px}
+        .nt-card h2{font-size:20px;margin:8px 0 8px}.nt-muted{color:#a7bfd1;font-size:13px;line-height:1.65}
+        .nt-command{display:flex;gap:10px;margin-top:18px}.nt-input{min-width:0;flex:1;padding:14px 15px;border-radius:10px;background:#04101f;color:#fff;border:1px solid #3d627d;font:inherit}
+        .nt-btn{background:#29b7d3;border:1px solid #63e6ff;color:#03131e;padding:12px 18px;border-radius:10px;font-weight:800;cursor:pointer}.nt-btn:disabled{opacity:.55;cursor:wait}
+        .nt-btn-alt{background:#12324b;color:#e6faff;border-color:#40748e}
+        .nt-response{margin-top:18px;background:#071625;padding:18px;border-radius:12px;border:1px solid #26445c;line-height:1.65;font-size:14px;color:#d5e8f4}
+        .nt-modules{margin-top:30px}.nt-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:16px}
+        .nt-module{text-decoration:none;color:#e9f5ff;display:block;border:1px solid #24445c;background:#0a1b2a;padding:20px;border-radius:13px;transition:transform .2s,border-color .2s}.nt-module:hover{transform:translateY(-3px);border-color:#50cde9}
+        .nt-module strong{display:block;margin-bottom:8px;font-size:14px}.nt-module small{color:#94b3c7;line-height:1.5;font-size:12px}
+        .nt-foot{font-size:11px;color:#718da2;margin-top:28px}
+        @media(max-width:1000px){.nt-home{grid-template-columns:1fr}.nt-side{position:static;height:auto;padding:19px 24px}.nt-nav{display:flex;flex-wrap:wrap;margin-top:18px;gap:3px}.nt-nav a{padding:8px 10px}.nt-content{padding:24px}.nt-hero{grid-template-columns:1fr}.nt-orb-wrap{display:none}}
+        @media(max-width:650px){.nt-grid{grid-template-columns:1fr}.nt-command{flex-wrap:wrap}.nt-input{flex-basis:100%}.nt-btn{flex:1}.nt-card{padding:17px}}
+        @media(prefers-reduced-motion:reduce){.nt-orb{animation:none}.nt-module{transition:none}}
+      `}</style>
+      <aside className="nt-side">
+        <div className="nt-brand">NEURO<span>TWIN</span> <span style={{fontSize:13}}>2050</span></div>
+        <div className="nt-kicker">Sistema de inteligência cognitiva</div>
+        <nav className="nt-nav" aria-label="Módulos NeuroTwin">
+          {links.map(([label, href]) => <a href={href} key={href} aria-current={href === "/dashboard" ? "page" : undefined}>{label}</a>)}
+        </nav>
+      </aside>
+      <div className="nt-content">
+        <section className="nt-hero">
+          <div>
+            <div className="nt-overline">INTELIGÊNCIA DIGITAL · VISÃO 2050</div>
+            <h1>O futuro começa com <em>clareza.</em></h1>
+            <p className="nt-lead">Conheça o NeuroTwin: um ambiente de inteligência digital que conecta informações, interpreta cenários e apoia decisões com inteligência artificial.</p>
+            <p className="nt-origin">Criado para transformar dados dispersos em conhecimento útil. O propósito é ampliar a capacidade humana de compreender o presente, identificar possibilidades e planejar os próximos passos — sempre com supervisão humana.</p>
+          </div>
+          <div className="nt-orb-wrap" aria-hidden="true"><div className="nt-orb" /></div>
+        </section>
+        <section className="nt-card" aria-label="Interação com o Twin">
+          <div className="nt-overline">CENTRO COGNITIVO · INTERAÇÃO</div>
+          <h2>Converse com o Twin</h2>
+          <p className="nt-muted">Pergunte, investigue um evento ou peça uma análise. O Twin utiliza as funções e fontes disponíveis no sistema.</p>
+          <form className="nt-command" onSubmit={event => { event.preventDefault(); void executar(comando); }}>
+            <input className="nt-input" aria-label="Escreva seu comando" value={comando} onChange={event => setComando(event.target.value)} placeholder="Ex.: Twin, mostre o terremoto mais recente" />
+            <button className="nt-btn" disabled={estado === "analisando"} type="submit">{estado === "analisando" ? "Analisando…" : "Executar"}</button>
+            <button className="nt-btn nt-btn-alt" type="button" onClick={ouvir}>{estado === "ouvindo" ? "Ouvindo…" : "Comando de voz"}</button>
+          </form>
+          {erroVoz && <p role="alert" className="nt-muted">{erroVoz}</p>}
+          <div className="nt-response" aria-live="polite"><div className="nt-overline" style={{marginBottom:9}}>RESPOSTA DO TWIN</div>{resposta}{destino && <div style={{marginTop:15}}><a className="nt-btn" style={{display:"inline-block",textDecoration:"none"}} href={destino}>Explorar epicentro no Observatório →</a></div>}</div>
+        </section>
+        <section className="nt-modules">
+          <div className="nt-overline">ECOSSISTEMA NEUROTWIN</div>
+          <h2 style={{fontSize:25,margin:"9px 0"}}>Inteligência aplicada a diferentes cenários</h2>
+          <div className="nt-grid">
+            <a className="nt-module" href="/dashboard/observatorio"><strong>◎ Observatório Global</strong><small>Monitoramento geográfico e análise de eventos a partir de fontes externas.</small></a>
+            <a className="nt-module" href="/dashboard/tendencias"><strong>↗ Tendências</strong><small>Exploração de sinais, mudanças e possíveis cenários.</small></a>
+            <a className="nt-module" href="/dashboard/oportunidades"><strong>✦ Oportunidades</strong><small>Organização de informações para apoiar decisões estratégicas.</small></a>
+            <a className="nt-module" href="/dashboard/relatorios"><strong>▤ Relatórios</strong><small>Consolidação e apresentação das análises disponíveis.</small></a>
+            <a className="nt-module" href="/dashboard/alertas"><strong>◇ Alertas</strong><small>Consulta aos avisos e eventos registrados pelo sistema.</small></a>
+            <a className="nt-module" href="/dashboard/neurobot"><strong>◈ NeuroBot</strong><small>Acesso ao módulo de assistência digital.</small></a>
+          </div>
+        </section>
+        <footer className="nt-foot">NeuroTwin 2050 · Inteligência para compreender, planejar e agir. Informações e análises dependem das fontes e serviços disponíveis.</footer>
+      </div>
+    </main>
+  );
 }
-return res.json();
-})
-.then((data) => {
-setObservatorio(data);
-})
-.catch((error) => {
-console.error("Erro ao carregar observatório:", error);
-setObservatorio(null);
-});
-
-const SpeechRecognition =
-(window as any).SpeechRecognition ||
-(window as any).webkitSpeechRecognition;
-
-if (!SpeechRecognition) {
-setResposta(
-"Reconhecimento de voz indisponível neste navegador."
-);
-return;
-}
-
-const recognition = new SpeechRecognition();
-
-recognition.lang = "pt-BR";
-recognition.continuous = false;
-recognition.interimResults = false;
-
-recognition.onresult = async (event: any) => {
-const frase =
-event.results?.[0]?.[0]?.transcript || "";
-
-if (!frase) {
-setResposta("Nenhum comando de voz identificado.");
-return;
-}
-
-setTexto(frase);
-setResposta("Analisando comando...");
-
-try {
-const r = await fetch("/api/chat", {
-method: "POST",
-headers: {
-"Content-Type": "application/json",
-},
-body: JSON.stringify({
-message: frase,
-}),
-});
-
-if (!r.ok) {
-throw new Error(`Chat HTTP ${r.status}`);
-}
-
-const data = await r.json();
-
-const reply =
-data.reply ||
-data.resposta ||
-"Resposta não encontrada.";
-
-setResposta(reply);
-
-if (data.action?.type === "FOCUS_GLOBE" && Number.isFinite(data.action.lat) && Number.isFinite(data.action.lng)) {
-  const params = new URLSearchParams({ lat: String(data.action.lat), lng: String(data.action.lng), evento: String(data.event?.place || "Terremoto USGS") });
-  window.location.assign("/dashboard/observatorio?" + params.toString());
-  return;
-}
-
-if ("speechSynthesis" in window) {
-const voz = new SpeechSynthesisUtterance(reply);
-
-voz.lang = "pt-BR";
-
-window.speechSynthesis.cancel();
-window.speechSynthesis.speak(voz);
-}
-} catch (error) {
-console.error("Erro NeuroTwin:", error);
-setResposta(
-"Falha ao consultar o núcleo operacional."
-);
-}
-};
-
-recognitionRef.current = recognition;
-
-return () => {
-try {
-recognition.stop();
-} catch {
-// Nenhuma ação necessária.
-}
-};
-}, []);
-
-function ouvir() {
-try {
-recognitionRef.current?.start();
-} catch {
-setResposta(
-"Não foi possível iniciar o reconhecimento de voz."
-);
-}
-}
-
-const paisesMonitorados =
-observatorio?.paisesMonitorados ??
-observatorio?.resumo?.paisesMonitorados ??
-0;
-
-const alertasAtivos =
-observatorio?.alertas?.length ??
-observatorio?.resumo?.alertasAtivos ??
-0;
-
-const modulosAtivos =
-observatorio?.modulos?.length ??
-3;
-
-const statusGlobal =
-observatorio
-? "Online"
-: "Carregando";
-
-return (
-<main style={styles.page}>
-<aside style={styles.sidebar}>
-<h1 style={styles.logo}>NeuroTwin 2050</h1>
-
-<p style={styles.subtitle}>
-Centro de Operações Estratégicas
-</p>
-
-<nav style={styles.nav}>
-<a style={styles.link} href="/dashboard">
-Centro Cognitivo
-</a>
-
-<a
-style={styles.link}
-href="/dashboard/observatorio"
->
-Observatório Global
-</a>
-
-<a
-style={styles.link}
-href="/dashboard/relatorios"
->
-Relatórios Executivos
-</a>
-
-<a
-style={styles.link}
-href="/dashboard/tendencias"
->
-Tendências
-</a>
-
-<a
-style={styles.link}
-href="/dashboard/oportunidades"
->
-Oportunidades
-</a>
-
-<a
-style={styles.link}
-href="/dashboard/alertas"
->
-Alertas Críticos
-</a>
-
-<a
-style={styles.link}
-href="/dashboard/neurobot"
->
-NeuroBot
-</a>
-</nav>
-</aside>
-
-<section style={styles.center}>
-<h2 style={styles.title}>
-Painel Operacional
-</h2>
-
-<p style={styles.desc}>
-Monitoramento, análise, previsão e decisão
-assistida por IA.
-</p>
-
-<div style={styles.avatarBox}>
-<img
-src="/avatar-neuro.png"
-alt="NeuroTwin"
-style={styles.avatar}
-/>
-</div>
-
-<button
-onClick={ouvir}
-style={styles.button}
->
-Comando de Voz
-</button>
-
-<div style={styles.responseBox}>
-<p style={styles.label}>
-Comando recebido:
-</p>
-
-<p style={styles.command}>
-{texto || "Aguardando comando..."}
-</p>
-
-<p style={styles.label}>
-Análise NeuroTwin:
-</p>
-
-<p style={styles.answer}>
-{resposta}
-</p>
-{destino && <a href={destino} style={{ color: "#73dfff", display: "inline-block", marginTop: 12 }}>Levar o globo ao epicentro →</a>}
-</div>
-</section>
-
-<aside style={styles.rightPanel}>
-<Card
-title="Status Global"
-value={statusGlobal}
-/>
-
-<Card
-title="Países Monitorados"
-value={String(paisesMonitorados)}
-/>
-
-<Card
-title="Alertas Ativos"
-value={String(alertasAtivos)}
-/>
-
-<Card
-title="Módulos Ativos"
-value={String(modulosAtivos)}
-/>
-
-<Card
-title="Relatórios"
-value="Prontos para emissão"
-/>
-</aside>
-</main>
-);
-}
-
-function Card({
-title,
-value,
-}: {
-title: string;
-value: string;
-}) {
-return (
-<div style={styles.card}>
-<span style={styles.cardTitle}>
-{title}
-</span>
-
-<strong style={styles.cardValue}>
-{value}
-</strong>
-</div>
-);
-}
-
-const styles: Record<string, React.CSSProperties> = {
-page: {
-minHeight: "100vh",
-display: "grid",
-gridTemplateColumns: "250px 1fr 280px",
-background:
-"radial-gradient(circle at center, #05235f 0%, #020817 48%, #01030a 100%)",
-color: "#ffffff",
-fontFamily: "Arial, Helvetica, sans-serif",
-},
-
-sidebar: {
-padding: "35px 24px",
-borderRight: "1px solid rgba(255,255,255,0.12)",
-background: "rgba(2,8,23,0.85)",
-},
-
-logo: {
-margin: 0,
-fontSize: "27px",
-fontWeight: 800,
-},
-
-subtitle: {
-marginTop: "8px",
-marginBottom: "35px",
-color: "#6ea8ff",
-fontSize: "14px",
-},
-
-nav: {
-display: "flex",
-flexDirection: "column",
-gap: "10px",
-},
-
-link: {
-color: "#ffffff",
-textDecoration: "none",
-padding: "12px 10px",
-borderRadius: "8px",
-fontSize: "15px",
-background: "rgba(255,255,255,0.02)",
-},
-
-center: {
-display: "flex",
-flexDirection: "column",
-alignItems: "center",
-padding: "50px 35px",
-textAlign: "center",
-},
-
-title: {
-fontSize: "42px",
-margin: "0 0 5px",
-},
-
-desc: {
-color: "#7db2ff",
-marginBottom: "30px",
-},
-
-avatarBox: {
-width: "340px",
-height: "340px",
-borderRadius: "50%",
-display: "flex",
-justifyContent: "center",
-alignItems: "center",
-background:
-"radial-gradient(circle, #0a3b8c 0%, #031535 60%, #010713 100%)",
-boxShadow:
-"0 0 30px #006dff, 0 0 90px rgba(0,109,255,0.55)",
-overflow: "hidden",
-},
-
-avatar: {
-width: "100%",
-height: "100%",
-objectFit: "cover",
-borderRadius: "50%",
-},
-
-button: {
-marginTop: "30px",
-padding: "14px 30px",
-border: "1px solid #247cff",
-borderRadius: "12px",
-background: "#0754c7",
-color: "#ffffff",
-fontWeight: 700,
-cursor: "pointer",
-fontSize: "15px",
-},
-
-responseBox: {
-width: "100%",
-maxWidth: "700px",
-marginTop: "30px",
-padding: "20px",
-border: "1px solid rgba(77,150,255,0.35)",
-borderRadius: "14px",
-background: "rgba(0,20,60,0.55)",
-textAlign: "left",
-},
-
-label: {
-color: "#73aaff",
-fontSize: "13px",
-marginBottom: "5px",
-},
-
-command: {
-marginTop: 0,
-marginBottom: "20px",
-color: "#ffffff",
-},
-
-answer: {
-marginTop: 0,
-color: "#ffffff",
-lineHeight: 1.6,
-},
-
-rightPanel: {
-padding: "35px 20px",
-borderLeft: "1px solid rgba(255,255,255,0.12)",
-display: "flex",
-flexDirection: "column",
-gap: "15px",
-background: "rgba(2,8,23,0.55)",
-},
-
-card: {
-minHeight: "80px",
-padding: "16px",
-borderRadius: "12px",
-border: "1px solid rgba(80,150,255,0.35)",
-background: "rgba(7,30,75,0.6)",
-display: "flex",
-flexDirection: "column",
-justifyContent: "center",
-},
-
-cardTitle: {
-color: "#9fc3ff",
-fontSize: "13px",
-marginBottom: "7px",
-},
-
-cardValue: {
-color: "#ffffff",
-fontSize: "16px",
-},
-};
-
