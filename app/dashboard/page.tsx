@@ -100,6 +100,13 @@ export default function Dashboard() {
         .nt-origin{font-size:13px;color:#91abc2;line-height:1.7;max-width:650px}
         .nt-orb-wrap{min-height:250px;display:grid;place-items:center}.nt-orb{width:min(22vw,250px);height:min(22vw,250px);min-width:170px;min-height:170px;border-radius:50%;position:relative;background:radial-gradient(circle at 35% 30%,#6be7ff 0%,#1a72b5 12%,#0a254b 45%,#020a1b 75%);box-shadow:0 0 70px #087cbe77,inset -24px -22px 45px #020a1b,0 0 0 1px #7eeaff45;animation:nt-breathe 5s ease-in-out infinite}
         .nt-orb:after{content:"";position:absolute;inset:-15px;border-radius:50%;border:1px solid #4ce7fa44;transform:rotateX(65deg) rotate(-25deg)}
+        .nt-twin-mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:5px;z-index:2;color:#e8fbff;text-shadow:0 0 18px #6ce8ff;font-size:48px;font-weight:850;letter-spacing:-.07em}
+        .nt-twin-mark i{font-size:32px;font-style:normal;color:#73e5ff}.nt-twin-mark small{position:absolute;top:67%;font-size:10px;letter-spacing:.24em;font-weight:700;color:#bdeaff}
+        .nt-orb-ouvindo{box-shadow:0 0 110px #00ddffb8,inset -24px -22px 45px #020a1b,0 0 0 5px #37e7ff55}
+        .nt-orb-analisando{animation:nt-analyze 1.3s ease-in-out infinite}
+        @keyframes nt-analyze{50%{filter:brightness(1.45);transform:scale(1.04)}}
+        @media(prefers-reduced-motion:reduce){.nt-orb-analisando{animation:none}}
+
         @keyframes nt-breathe{50%{box-shadow:0 0 100px #087cbeaa,inset -24px -22px 45px #020a1b,0 0 0 1px #7eeaff65}}
         .nt-card{background:linear-gradient(135deg,#0d2237d9,#091524ed);border:1px solid #31516c80;border-radius:18px;padding:25px}
         .nt-card h2{font-size:20px;margin:8px 0 8px}.nt-muted{color:#a7bfd1;font-size:13px;line-height:1.65}
@@ -130,16 +137,20 @@ export default function Dashboard() {
             <p className="nt-lead">Conheça o NeuroTwin: um ambiente de inteligência digital que conecta informações, interpreta cenários e apoia decisões com inteligência artificial.</p>
             <p className="nt-origin">Criado para transformar dados dispersos em conhecimento útil. O propósito é ampliar a capacidade humana de compreender o presente, identificar possibilidades e planejar os próximos passos — sempre com supervisão humana.</p>
           </div>
-          <div className="nt-orb-wrap" aria-hidden="true"><div className="nt-orb" /></div>
+          <div className="nt-orb-wrap" role="img" aria-label={"Twin: " + estado}>
+            <div className={"nt-orb nt-orb-" + estado}>
+              <div className="nt-twin-mark"><span>N</span><i>✧</i><span>T</span><small>NEUROTWIN</small></div>
+            </div>
+          </div>
         </section>
         <section className="nt-card" aria-label="Interação com o Twin">
           <div className="nt-overline">CENTRO COGNITIVO · INTERAÇÃO</div>
-          <h2>Converse com o Twin</h2>
+          <h2>Converse com o Twin</h2><p className="nt-muted" aria-live="polite">Estado: {estado === "ouvindo" ? "ouvindo seu comando" : estado === "analisando" ? "analisando sua solicitação" : "pronto para interagir"}</p>
           <p className="nt-muted">Pergunte, investigue um evento ou peça uma análise. O Twin utiliza as funções e fontes disponíveis no sistema.</p>
           <form className="nt-command" onSubmit={event => { event.preventDefault(); void executar(comando); }}>
             <input className="nt-input" aria-label="Escreva seu comando" value={comando} onChange={event => setComando(event.target.value)} placeholder="Ex.: Twin, mostre o terremoto mais recente" />
             <button className="nt-btn" disabled={estado === "analisando"} type="submit">{estado === "analisando" ? "Analisando…" : "Executar"}</button>
-            <button className="nt-btn nt-btn-alt" type="button" onClick={ouvir}>{estado === "ouvindo" ? "Ouvindo…" : "Comando de voz"}</button>
+            <button className="nt-btn nt-btn-alt" type="button" onClick={ouvir} disabled={estado !== "pronto"}>{estado === "ouvindo" ? "Ouvindo…" : "Comando de voz"}</button>
           </form>
           {erroVoz && <p role="alert" className="nt-muted">{erroVoz}</p>}
           <div className="nt-response" aria-live="polite"><div className="nt-overline" style={{marginBottom:9}}>RESPOSTA DO TWIN</div>{resposta}{destino && <div style={{marginTop:15}}><a className="nt-btn" style={{display:"inline-block",textDecoration:"none"}} href={destino}>Explorar epicentro no Observatório →</a></div>}</div>
