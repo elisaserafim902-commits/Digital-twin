@@ -455,6 +455,59 @@ resultado.eventosGDACS.length,
 
 /*
 =========================================================
+MONITORAMENTO MULTIEVENTOS - PROVENIENCIA E COBERTURA
+=========================================================
+*/
+const ultimoRegistro = (items: any[], campo: (item: any) => unknown) => {
+const datas = items.map(campo).map(valor => {
+if (valor === null || valor === undefined || valor === "") return NaN;
+return new Date(valor as string | number).getTime();
+}).filter((valor: number) => Number.isFinite(valor) && valor <= Date.now() + 3600000);
+return datas.length ? new Date(Math.max(...datas)).toISOString() : null;
+};
+
+resultado.monitoramento = {
+versao: "1.0",
+geradoEm: new Date().toISOString(),
+modalidade: "agregacao_periodica_de_fontes",
+transmissaoAoVivo: false,
+fontes: {
+usgs: {
+status: resultado.fontes.usgs.status,
+janela: "ultimas_24_horas",
+ultimoEventoEm: ultimoRegistro(resultado.terremotos, (e) => e.horario),
+eventosExibidos: resultado.terremotos.length,
+limiteExibicao: 100,
+observacao: "Feed USGS de terremotos; nao representa cobertura de todos os fenomenos."
+},
+nasaEonet: {
+status: resultado.fontes.nasaEonet.status,
+janela: "eventos_abertos_na_fonte",
+ultimoEventoEm: ultimoRegistro(resultado.eventosNaturais, (e) => e.data),
+eventosExibidos: resultado.eventosNaturais.length,
+limiteConsulta: 50,
+observacao: "Eventos abertos na EONET; abertura nao garante atividade fisica no instante da consulta."
+},
+gdacs: {
+status: resultado.fontes.gdacs.status,
+janela: "conforme_feed_gdacs",
+ultimoEventoEm: ultimoRegistro(resultado.eventosGDACS, (e) => e.inicio),
+eventosExibidos: resultado.eventosGDACS.length,
+observacao: "Alertas GDACS; cobertura e frequencia dependem do provedor."
+}
+},
+cobertura: {
+categorias: ["terremoto","tsunami","enchente","incendio","vulcao","ciclone","tempestade","seca","deslizamento","outro"],
+tornadoDedicado: false,
+deteccaoTermicaDedicada: false,
+radarMeteorologicoDedicado: false,
+observacao: "Categorias indicam tipos reconhecidos, nao cobertura mundial exaustiva. Tornados e observacoes especializadas exigem integracoes adicionais."
+},
+integridade: "Sem confirmacao de atividade em tempo real por imagem; consultar horario de cada evento e status de cada fonte."
+};
+
+/*
+=========================================================
 RESPOSTA FINAL
 =========================================================
 */
