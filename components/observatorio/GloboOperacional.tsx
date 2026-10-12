@@ -1293,7 +1293,7 @@ Coordenadas:{" "}
 
 <p>Fonte: {selecionado.fonte}</p>
 <button type="button" onClick={() => setExploradorAberto((v) => !v)} style={{display:"inline-block",marginTop:10,padding:"9px 12px",borderRadius:9,border:"1px solid #1d9cd0",background:"#073451",color:"#b8f2ff",cursor:"pointer"}}>{exploradorAberto ? "Ocultar mapa detalhado" : "Explorar localização no NeuroTwin"}</button>
-{exploradorAberto && <GeoAlertExplorer lat={selecionado.lat} lng={selecionado.lng} titulo={selecionado.titulo} severidade={selecionado.severidade} nivelAlerta={selecionado.nivelAlerta} fonte={selecionado.fonte} onClose={() => setExploradorAberto(false)}/>}
+{exploradorAberto && <GeoAlertExplorer lat={selecionado.lat} lng={selecionado.lng} titulo={selecionado.titulo} severidade={selecionado.severidade} nivelAlerta={selecionado.nivelAlerta} fonte={selecionado.fonte} horario={selecionado.horario} tipo={selecionado.tipo} magnitude={selecionado.magnitude} proximos={eventos.filter(e => e.id !== selecionado.id).map(e => ({id:e.id,titulo:e.titulo,fonte:e.fonte,distanciaKm:distanciaKm(selecionado.lat,selecionado.lng,e.lat,e.lng)})).filter(e => e.distanciaKm <= 100).sort((a,b)=>a.distanciaKm-b.distanciaKm)} onClose={() => setExploradorAberto(false)}/>}
 
 <div className="nt-alert" role="status" aria-live="polite">
 <strong>NEUROTWIN GEOALERT · TRIAGEM INFORMATIVA</strong>
