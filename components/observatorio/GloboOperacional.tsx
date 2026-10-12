@@ -558,7 +558,7 @@ const moverCamera = useCallback(
 (
 lat: number,
 lng: number,
-altitude = 0.65
+altitude = 0.24
 ) => {
 window.setTimeout(() => {
 const globe = globeRef.current;
@@ -600,7 +600,7 @@ useEffect(() => {
   if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return;
   setRotacao(false);
   setPontoLocal({ lat, lng });
-  moverCamera(lat, lng, 0.62);
+  moverCamera(lat, lng, 0.24);
 }, [moverCamera]);
 
 useEffect(() => {
@@ -623,7 +623,7 @@ setRotacao(false);
 moverCamera(
 evento.lat,
 evento.lng,
-0.62
+0.24
 );
 },
 [moverCamera]
@@ -650,7 +650,7 @@ lng,
 moverCamera(
 lat,
 lng,
-0.58
+0.24
 );
 },
 [moverCamera]
@@ -1118,6 +1118,7 @@ TOQUE EM QUALQUER PONTO DO PLANETA PARA ANÁLISE LOCAL
 <Globe
 ref={globeRef}
 onGlobeReady={globoPronto}
+pointsMerge={false}
 height={700}
 backgroundColor="rgba(0,0,0,0)"
 globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
