@@ -9,6 +9,7 @@ const [resposta, setResposta] = useState(
 );
 const [observatorio, setObservatorio] = useState<any>(null);
 const recognitionRef = useRef<any>(null);
+const [destino, setDestino] = useState<string | null>(null);
 
 useEffect(() => {
 fetch("/api/observatorio")
@@ -240,6 +241,7 @@ Análise NeuroTwin:
 <p style={styles.answer}>
 {resposta}
 </p>
+{destino && <a href={destino} style={{ color: "#73dfff", display: "inline-block", marginTop: 12 }}>Levar o globo ao epicentro →</a>}
 </div>
 </section>
 
