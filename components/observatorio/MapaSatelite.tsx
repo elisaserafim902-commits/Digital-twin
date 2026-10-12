@@ -29,8 +29,8 @@ export default function MapaSatelite({ lat, lng, title = "Ponto geográfico" }: 
       return {
         key: `${zoom}-${tx}-${ty}`,
         url: ty < 0 || ty >= n ? "" : `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${zoom}/${ty}/${tx}`,
-        left: 50 + (dx * 256 - offsetX) / 256 * 100,
-        top: 50 + (dy * 256 - offsetY) / 256 * 100,
+        left: dx * 256 - offsetX,
+        top: dy * 256 - offsetY,
       };
     });
   }, [latitude, longitude, zoom]);
@@ -46,7 +46,7 @@ export default function MapaSatelite({ lat, lng, title = "Ponto geográfico" }: 
       <div aria-label="Imagem de satélite centralizada nas coordenadas selecionadas" style={{ height: 280, position: "relative", overflow: "hidden", background: "#07101c", borderRadius: 9 }}>
         {tiles.map(tile => tile.url && (
           <img key={tile.key} src={tile.url} alt="" loading="lazy" draggable={false}
-            style={{ position: "absolute", width: 256, height: 256, maxWidth: "none", left: `calc(${tile.left}% - 128px)`, top: `calc(${tile.top}% - 128px)`, pointerEvents: "none" }} />
+            style={{ position: "absolute", width: 256, height: 256, maxWidth: "none", left: `calc(50% + ${tile.left}px)`, top: `calc(50% + ${tile.top}px)`, pointerEvents: "none" }} />
         ))}
         <div aria-hidden="true" style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)", color: "#00f5ff", fontSize: 28, textShadow: "0 0 5px black" }}>⊕</div>
       </div>
