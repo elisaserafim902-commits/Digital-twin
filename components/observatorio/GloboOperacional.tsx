@@ -229,6 +229,7 @@ focoExterno = null,
 }: Props) {
 const globeRef = useRef<any>(null);
 
+const [camadaSatelite, setCamadaSatelite] = useState<"nasa" | "padrao">("nasa");
 const [selecionado, setSelecionado] =
 useState<Evento | null>(null);
 
@@ -1049,6 +1050,8 @@ gap: 4px;
 `}</style>
 
 <div className="nt-controls">
+<button type="button" className={`nt-btn ${camadaSatelite === "nasa" ? "active" : ""}`} onClick={() => setCamadaSatelite("nasa")}>Terra NASA</button>
+<button type="button" className={`nt-btn ${camadaSatelite === "padrao" ? "active" : ""}`} onClick={() => setCamadaSatelite("padrao")}>Mapa físico</button>
 {filtros.map((item) => (
 <button
 type="button"
@@ -1105,6 +1108,7 @@ NEUROTWIN GEOINTELLIGENCE
 <strong>
 Globo Operacional 3D
 </strong>
+<small>Imagem global de referência NASA Blue Marble · Não é transmissão orbital em tempo real</small>
 </div>
 
 <div className="nt-count">
@@ -1125,7 +1129,7 @@ onGlobeReady={globoPronto}
 pointsMerge={false}
 height={700}
 backgroundColor="rgba(0,0,0,0)"
-globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+globeImageUrl={camadaSatelite === "nasa" ? "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg" : "https://unpkg.com/three-globe/example/img/earth-day.jpg"}
 bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
 showAtmosphere={true}
 showGraticules={true}
