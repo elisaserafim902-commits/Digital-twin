@@ -108,6 +108,15 @@ export default function Dashboard() {
         @media(prefers-reduced-motion:reduce){.nt-orb-analisando{animation:none}}
 
         @keyframes nt-breathe{50%{box-shadow:0 0 100px #087cbeaa,inset -24px -22px 45px #020a1b,0 0 0 1px #7eeaff65}}
+        .nt-institutional{background:linear-gradient(115deg,#102a3c,#071626);border:1px solid #355b73;border-radius:18px;padding:25px;margin:0 0 24px}
+        .nt-institutional h2{font-size:clamp(20px,2.4vw,29px);letter-spacing:-.03em;margin:12px 0 18px}
+        .nt-pillars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+        .nt-pillars>div{border:1px solid #29495d;background:#091c2c;border-radius:11px;padding:16px}
+        .nt-pillars strong{display:block;color:#bdeef6;font-size:13px;margin-bottom:9px}
+        .nt-pillars span{display:block;color:#b3c8d8;font-size:12px;line-height:1.65}
+        .nt-institutional-action{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:19px;flex-wrap:wrap}
+        .nt-institutional-action a{background:#3cc4d9;color:#061521;text-decoration:none;padding:11px 14px;border-radius:9px;font-size:12px;font-weight:800}
+        .nt-institutional-action span{font-size:11px;line-height:1.6;color:#92acbf;max-width:410px}
         .nt-card{background:linear-gradient(135deg,#0d2237d9,#091524ed);border:1px solid #31516c80;border-radius:18px;padding:25px}
         .nt-card h2{font-size:20px;margin:8px 0 8px}.nt-muted{color:#a7bfd1;font-size:13px;line-height:1.65}
         .nt-command{display:flex;gap:10px;margin-top:18px}.nt-input{min-width:0;flex:1;padding:14px 15px;border-radius:10px;background:#04101f;color:#fff;border:1px solid #3d627d;font:inherit}
@@ -119,12 +128,12 @@ export default function Dashboard() {
         .nt-module strong{display:block;margin-bottom:8px;font-size:14px}.nt-module small{color:#94b3c7;line-height:1.5;font-size:12px}
         .nt-foot{font-size:11px;color:#718da2;margin-top:28px}
         @media(max-width:1000px){.nt-home{grid-template-columns:1fr}.nt-side{position:static;height:auto;padding:19px 24px}.nt-nav{display:flex;flex-wrap:wrap;margin-top:18px;gap:3px}.nt-nav a{padding:8px 10px}.nt-content{padding:24px}.nt-hero{grid-template-columns:1fr}.nt-orb-wrap{display:none}}
-        @media(max-width:650px){.nt-grid{grid-template-columns:1fr}.nt-command{flex-wrap:wrap}.nt-input{flex-basis:100%}.nt-btn{flex:1}.nt-card{padding:17px}}
+        @media(max-width:650px){.nt-pillars{grid-template-columns:1fr}.nt-grid{grid-template-columns:1fr}.nt-command{flex-wrap:wrap}.nt-input{flex-basis:100%}.nt-btn{flex:1}.nt-card{padding:17px}}
         @media(prefers-reduced-motion:reduce){.nt-orb{animation:none}.nt-module{transition:none}}
       `}</style>
       <aside className="nt-side">
         <div className="nt-brand">NEURO<span>TWIN</span> <span style={{fontSize:13}}>2050</span></div>
-        <div className="nt-kicker">Sistema de inteligência cognitiva</div>
+        <div className="nt-kicker">Inteligência estratégica · apoio à decisão</div>
         <nav className="nt-nav" aria-label="Módulos NeuroTwin">
           {links.map(([label, href]) => <a href={href} key={href} aria-current={href === "/dashboard" ? "page" : undefined}>{label}</a>)}
         </nav>
@@ -132,16 +141,26 @@ export default function Dashboard() {
       <div className="nt-content">
         <section className="nt-hero">
           <div>
-            <div className="nt-overline">INTELIGÊNCIA DIGITAL · VISÃO 2050</div>
-            <h1>O futuro começa com <em>clareza.</em></h1>
-            <p className="nt-lead">Conheça o NeuroTwin: um ambiente de inteligência digital que conecta informações, interpreta cenários e apoia decisões com inteligência artificial.</p>
-            <p className="nt-origin">Criado para transformar dados dispersos em conhecimento útil. O propósito é ampliar a capacidade humana de compreender o presente, identificar possibilidades e planejar os próximos passos — sempre com supervisão humana.</p>
+            <div className="nt-overline">PLATAFORMA DE INTELIGÊNCIA ESTRATÉGICA · VISÃO 2050</div>
+            <h1>Inteligência para <em>decisões fundamentadas.</em></h1>
+            <p className="nt-lead">NeuroTwin 2050 é uma plataforma em desenvolvimento para reunir informações verificáveis, explorar cenários e apoiar análises estratégicas, inclusive em aplicações de interesse público.</p>
+            <p className="nt-origin">Nossa missão é transformar dados dispersos em conhecimento rastreável. O sistema oferece subsídios à análise, sem substituir especialistas, gestores ou decisões oficiais.</p>
           </div>
           <div className="nt-orb-wrap" role="img" aria-label={"Twin: " + estado}>
             <div className={"nt-orb nt-orb-" + estado}>
               <div className="nt-twin-mark"><span>N</span><i>✧</i><span>T</span><small>NEUROTWIN</small></div>
             </div>
           </div>
+        </section>
+        <section className="nt-institutional" aria-label="Apresentação institucional">
+          <div className="nt-overline">PROPOSTA DE VALOR · APLICAÇÕES DE INTERESSE PÚBLICO</div>
+          <h2>Da fonte à decisão: um processo verificável</h2>
+          <div className="nt-pillars">
+            <div><strong>01 · Origem e propósito</strong><span>Projeto independente de inteligência digital concebido para organizar informações e ampliar a capacidade de análise humana.</span></div>
+            <div><strong>02 · Demonstração com dados reais</strong><span>O Observatório consulta eventos sísmicos no feed público do USGS e permite explorar suas coordenadas. Não realiza previsão de desastres.</span></div>
+            <div><strong>03 · Governança e responsabilidade</strong><span>Fontes identificadas, limitações explícitas e supervisão humana. Segurança, LGPD e acessibilidade ainda requerem auditoria.</span></div>
+          </div>
+          <div className="nt-institutional-action"><a href="/dashboard/observatorio">Explorar demonstração no Observatório →</a><span>Plataforma em desenvolvimento. Sem vínculo, homologação ou certificação governamental.</span></div>
         </section>
         <section className="nt-card" aria-label="Interação com o Twin">
           <div className="nt-overline">CENTRO COGNITIVO · INTERAÇÃO</div>
@@ -157,7 +176,7 @@ export default function Dashboard() {
         </section>
         <section className="nt-modules">
           <div className="nt-overline">ECOSSISTEMA NEUROTWIN</div>
-          <h2 style={{fontSize:25,margin:"9px 0"}}>Inteligência aplicada a diferentes cenários</h2>
+          <h2 style={{fontSize:25,margin:"9px 0"}}>Módulos da plataforma · desenvolvimento por etapas</h2>
           <div className="nt-grid">
             <a className="nt-module" href="/dashboard/observatorio"><strong>◎ Observatório Global</strong><small>Monitoramento geográfico e análise de eventos a partir de fontes externas.</small></a>
             <a className="nt-module" href="/dashboard/tendencias"><strong>↗ Tendências</strong><small>Exploração de sinais, mudanças e possíveis cenários.</small></a>
