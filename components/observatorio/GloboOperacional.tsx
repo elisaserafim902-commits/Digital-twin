@@ -1281,6 +1281,12 @@ Coordenadas:{" "}
 </p>
 
 <p>Fonte: {selecionado.fonte}</p>
+<a
+href={`https://www.openstreetmap.org/?mlat=${selecionado.lat}&mlon=${selecionado.lng}#map=12/${selecionado.lat}/${selecionado.lng}`}
+target="_blank"
+rel="noopener noreferrer"
+style={{ display: "inline-block", marginTop: 10, color: "#6de4ff" }}
+>Explorar localização no mapa detalhado ↗</a>
 
 <div className="nt-alert">
 Severidade operacional:{" "}
@@ -1316,6 +1322,7 @@ Latitude: {pontoLocal.lat.toFixed(5)}
 <p>
 Longitude: {pontoLocal.lng.toFixed(5)}
 </p>
+<a href={`https://www.openstreetmap.org/?mlat=${pontoLocal.lat}&mlon=${pontoLocal.lng}#map=13/${pontoLocal.lat}/${pontoLocal.lng}`} target="_blank" rel="noopener noreferrer" style={{ color: "#6de4ff", display: "inline-block", margin: "8px 0" }}>Abrir coordenada em mapa detalhado ↗</a>
 
 <div className="nt-radius">
 <button
