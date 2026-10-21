@@ -230,8 +230,7 @@ geometries.length - 1
 
 return {
 id:
-event?.id ||
-`eonet-${Math.random()}`,
+event?.id || null,
 
 titulo:
 event?.title ||
@@ -276,7 +275,7 @@ fonte: "NASA EONET",
 })
 .filter(
 (event: any) =>
-event.geometria !== null
+event.geometria !== null && Boolean(event.id)
 );
 
 resultado.resumo.eventosNaturaisAbertos =
