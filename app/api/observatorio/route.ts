@@ -1,20 +1,71 @@
 import { NextResponse } from "next/server";
+import { consultarGDACS } from "../../../lib/providers/gdacs";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-async function fetchJSON(url: string) {
+/*
+=========================================================
+NEUROTWIN 2050 - OBSERVATORIO GLOBAL
+Camada resiliente de integracao
+=========================================================
+*/
+
+type FetchOptions = {
+timeoutMs?: number;
+retries?: number;
+};
+
+function esperar(ms: number) {
+return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchJSON(
+url: string,
+options: FetchOptions = {}
+) {
+const timeoutMs = options.timeoutMs ?? 8000;
+const retries = options.retries ?? 1;
+
+let ultimoErro: unknown;
+
+for (let tentativa = 0; tentativa <= retries; tentativa++) {
+const controller = new AbortController();
+
+const timeout = setTimeout(() => {
+controller.abort();
+}, timeoutMs);
+
+try {
 const response = await fetch(url, {
 cache: "no-store",
+signal: controller.signal,
 headers: {
-"User-Agent": "NeuroTwin-2050/1.0",
+"User-Agent": "NeuroTwin-2050/2.0",
+Accept: "application/json",
 },
 });
 
+clearTimeout(timeout);
+
 if (!response.ok) {
-throw new Error(`Falha HTTP ${response.status}`);
+throw new Error(
+`Falha HTTP ${response.status} em ${url}`
+);
 }
 
-return response.json();
+return await response.json();
+} catch (error) {
+clearTimeout(timeout);
+ultimoErro = error;
+
+if (tentativa < retries) {
+await esperar(600 * (tentativa + 1));
+}
+}
+}
+
+throw ultimoErro;
 }
 
 export async function GET() {
@@ -23,76 +74,455 @@ const agora = new Date().toISOString();
 const resultado: any = {
 status: "online",
 atualizadoEm: agora,
-fontes: {},
+
+fontes: {
+usgs: {
+status: "carregando",
+descricao: "USGS Earthquake Hazards Program",
+},
+
+nasaEonet: {
+status: "carregando",
+descricao:
+"NASA Earth Observatory Natural Event Tracker",
+},
+
+gdacs: {
+status: "carregando",
+descricao:
+"GDACS - Global Disaster Alert and Coordination System",
+},
+},
+
 terremotos: [],
 eventosNaturais: [],
+eventosGDACS: [],
+
 resumo: {
-terremotos24h: 0,
-terremotosFortes24h: 0,
-eventosNaturaisAbertos: 0,
+terremotos24h: null,
+terremotosFortes24h: null,
+eventosNaturaisAbertos: null,
+eventosGDACS: null,
 },
 };
 
+/*
+=========================================================
+USGS - TERREMOTOS
+=========================================================
+*/
+
 try {
 const usgs = await fetchJSON(
-"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
+{
+timeoutMs: 8000,
+retries: 1,
+}
 );
 
-resultado.terremotos = (usgs.features || [])
-.map((item: any) => ({
-id: item.id,
-magnitude: item.properties?.mag,
-local: item.properties?.place,
-horario: item.properties?.time,
-url: item.properties?.url,
-coordenadas: item.geometry?.coordinates,
-}))
-.slice(0, 50);
+const features = Array.isArray(usgs?.features)
+? usgs.features
+: [];
 
-resultado.resumo.terremotos24h = usgs.features?.length || 0;
+resultado.terremotos = features
+.map((item: any) => ({
+id: item?.id || null,
+
+magnitude:
+typeof item?.properties?.mag === "number"
+? item.properties.mag
+: null,
+
+local:
+item?.properties?.place ||
+"Local nao informado",
+
+horario:
+item?.properties?.time || null,
+
+url:
+item?.properties?.url || null,
+
+tsunami:
+item?.properties?.tsunami === 1,
+
+tipo:
+item?.properties?.type ||
+"earthquake",
+
+coordenadas:
+Array.isArray(item?.geometry?.coordinates)
+? item.geometry.coordinates
+: null,
+
+fonte: "USGS",
+}))
+.filter(
+(item: any) =>
+Array.isArray(item.coordenadas) &&
+item.coordenadas.length >= 2
+)
+.slice(0, 100);
+
+resultado.resumo.terremotos24h =
+features.length;
 
 resultado.resumo.terremotosFortes24h =
-usgs.features?.filter((item: any) => (item.properties?.mag || 0) >= 4.5)
-.length || 0;
+features.filter(
+(item: any) =>
+Number(item?.properties?.mag || 0) >= 4.5
+).length;
 
 resultado.fontes.usgs = {
 status: "online",
-descricao: "USGS Earthquake Hazards Program",
+descricao:
+"USGS Earthquake Hazards Program",
+atualizadoEm: agora,
 };
 } catch (error) {
+console.error(
+"NeuroTwin - falha USGS:",
+error
+);
+
 resultado.fontes.usgs = {
-status: "erro",
-descricao: "USGS Earthquake Hazards Program",
+status: "offline",
+descricao:
+"USGS temporariamente indisponivel",
+atualizadoEm: agora,
 };
 }
 
+/*
+=========================================================
+NASA EONET - EVENTOS NATURAIS
+=========================================================
+*/
+
 try {
 const eonet = await fetchJSON(
-"https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=50"
+"https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=50",
+{
+timeoutMs: 7000,
+retries: 1,
+}
 );
 
-resultado.eventosNaturais = (eonet.events || []).map((event: any) => ({
-id: event.id,
-titulo: event.title,
-descricao: event.description || null,
-categorias: (event.categories || []).map((c: any) => c.title),
-geometria: event.geometry?.[event.geometry.length - 1] || null,
-fontes: event.sources || [],
-}));
+const eventos = Array.isArray(eonet?.events)
+? eonet.events
+: [];
+
+resultado.eventosNaturais = eventos
+.map((event: any) => {
+const geometries = Array.isArray(
+event?.geometry
+)
+? event.geometry
+: [];
+
+const ultimaGeometria =
+geometries.length > 0
+? geometries[
+geometries.length - 1
+]
+: null;
+
+return {
+id:
+event?.id || null,
+
+titulo:
+event?.title ||
+"Evento natural",
+
+descricao:
+event?.description || null,
+
+categorias: Array.isArray(
+event?.categories
+)
+? event.categories
+.map(
+(categoria: any) =>
+categoria?.title
+)
+.filter(Boolean)
+: [],
+
+geometria:
+ultimaGeometria,
+
+data:
+ultimaGeometria?.date ||
+null,
+
+coordenadas:
+Array.isArray(
+ultimaGeometria?.coordinates
+)
+? ultimaGeometria.coordinates
+: null,
+
+fontes: Array.isArray(
+event?.sources
+)
+? event.sources
+: [],
+
+fonte: "NASA EONET",
+};
+})
+.filter(
+(event: any) =>
+event.geometria !== null && Boolean(event.id)
+);
 
 resultado.resumo.eventosNaturaisAbertos =
 resultado.eventosNaturais.length;
 
 resultado.fontes.nasaEonet = {
 status: "online",
-descricao: "NASA EONET",
+descricao:
+"NASA Earth Observatory Natural Event Tracker",
+atualizadoEm: agora,
 };
-} catch (error) {
+} catch (error: any) {
+const tipoErro =
+error?.name === "AbortError"
+? "timeout"
+: "conexao";
+
+console.error(
+`NeuroTwin - NASA EONET ${tipoErro}:`,
+error
+);
+
+/*
+IMPORTANTE:
+Falha da NASA NAO derruba o Observatorio.
+USGS e GDACS continuam funcionando.
+*/
+
+resultado.eventosNaturais = [];
+
+resultado.resumo.eventosNaturaisAbertos =
+null;
+
 resultado.fontes.nasaEonet = {
-status: "erro",
-descricao: "NASA EONET",
+status: "offline",
+descricao:
+tipoErro === "timeout"
+? "NASA EONET temporariamente lenta"
+: "NASA EONET temporariamente indisponivel",
+atualizadoEm: agora,
 };
 }
 
-return NextResponse.json(resultado);
+/*
+=========================================================
+GDACS - GLOBAL DISASTER ALERTS
+=========================================================
+*/
+
+try {
+const gdacs = await consultarGDACS();
+
+const eventosGDACS = Array.isArray(
+gdacs?.eventos
+)
+? gdacs.eventos
+: [];
+
+resultado.eventosGDACS =
+eventosGDACS
+.map((evento: any) => ({
+...evento,
+
+fonte:
+evento?.fonte || "GDACS",
+
+coordenadas:
+Array.isArray(
+evento?.coordenadas
+)
+? evento.coordenadas
+: null,
+}))
+.filter(
+(evento: any) =>
+Array.isArray(
+evento.coordenadas
+) &&
+evento.coordenadas.length >= 2
+);
+
+resultado.resumo.eventosGDACS =
+Number(gdacs?.total) ||
+resultado.eventosGDACS.length;
+
+resultado.fontes.gdacs = {
+status:
+gdacs?.status || "online",
+
+descricao:
+"GDACS - Global Disaster Alert and Coordination System",
+
+atualizadoEm:
+gdacs?.atualizadoEm ||
+agora,
+};
+} catch (error) {
+console.error(
+"NeuroTwin - falha GDACS:",
+error
+);
+
+resultado.fontes.gdacs = {
+status: "offline",
+
+descricao:
+"GDACS temporariamente indisponivel",
+
+atualizadoEm: agora,
+};
+
+resultado.eventosGDACS = [];
+
+resultado.resumo.eventosGDACS = null;
+}
+
+/*
+=========================================================
+STATUS GLOBAL
+=========================================================
+*/
+
+const estados = [
+resultado.fontes.usgs.status,
+resultado.fontes.nasaEonet.status,
+resultado.fontes.gdacs.status,
+];
+
+const fontesOnline = estados.filter(
+(status) => status === "online"
+).length;
+
+if (fontesOnline === 3) {
+resultado.status = "online";
+} else if (fontesOnline > 0) {
+resultado.status = "degradado";
+} else {
+resultado.status = "offline";
+}
+
+resultado.saude = {
+fontesOnline,
+fontesTotal: 3,
+
+usgs:
+resultado.fontes.usgs.status,
+
+nasaEonet:
+resultado.fontes.nasaEonet.status,
+
+gdacs:
+resultado.fontes.gdacs.status,
+};
+
+/*
+=========================================================
+DADOS GEOESPACIAIS CONSOLIDADOS
+=========================================================
+*/
+
+resultado.geo = {
+terremotos:
+resultado.terremotos.length,
+
+eventosNASA:
+resultado.eventosNaturais.length,
+
+eventosGDACS:
+resultado.eventosGDACS.length,
+
+total:
+resultado.terremotos.length +
+resultado.eventosNaturais.length +
+resultado.eventosGDACS.length,
+};
+
+/*
+=========================================================
+MONITORAMENTO MULTIEVENTOS - PROVENIENCIA E COBERTURA
+=========================================================
+*/
+const ultimoRegistro = (items: any[], campo: (item: any) => unknown) => {
+const datas = items.map(campo).map(valor => {
+if (valor === null || valor === undefined || valor === "") return NaN;
+return new Date(valor as string | number).getTime();
+}).filter((valor: number) => Number.isFinite(valor) && valor <= Date.now() + 3600000);
+return datas.length ? new Date(Math.max(...datas)).toISOString() : null;
+};
+
+resultado.monitoramento = {
+versao: "1.0",
+geradoEm: new Date().toISOString(),
+modalidade: "agregacao_periodica_de_fontes",
+transmissaoAoVivo: false,
+fontes: {
+usgs: {
+status: resultado.fontes.usgs.status,
+janela: "ultimas_24_horas",
+ultimoEventoEm: ultimoRegistro(resultado.terremotos, (e) => e.horario),
+eventosExibidos: resultado.terremotos.length,
+limiteExibicao: 100,
+observacao: "Feed USGS de terremotos; nao representa cobertura de todos os fenomenos."
+},
+nasaEonet: {
+status: resultado.fontes.nasaEonet.status,
+janela: "eventos_abertos_na_fonte",
+ultimoEventoEm: ultimoRegistro(resultado.eventosNaturais, (e) => e.data),
+eventosExibidos: resultado.eventosNaturais.length,
+limiteConsulta: 50,
+observacao: "Eventos abertos na EONET; abertura nao garante atividade fisica no instante da consulta."
+},
+gdacs: {
+status: resultado.fontes.gdacs.status,
+janela: "conforme_feed_gdacs",
+ultimoEventoEm: ultimoRegistro(resultado.eventosGDACS, (e) => e.inicio),
+eventosExibidos: resultado.eventosGDACS.length,
+observacao: "Alertas GDACS; cobertura e frequencia dependem do provedor."
+}
+},
+cobertura: {
+categorias: ["terremoto","tsunami","enchente","incendio","vulcao","ciclone","tempestade","seca","deslizamento","outro"],
+tornadoDedicado: false,
+deteccaoTermicaDedicada: false,
+radarMeteorologicoDedicado: false,
+observacao: "Categorias indicam tipos reconhecidos, nao cobertura mundial exaustiva. Tornados e observacoes especializadas exigem integracoes adicionais."
+},
+integridade: "Sem confirmacao de atividade em tempo real por imagem; consultar horario de cada evento e status de cada fonte."
+};
+
+/*
+=========================================================
+RESPOSTA FINAL
+=========================================================
+*/
+
+return NextResponse.json(
+resultado,
+{
+status: 200,
+
+headers: {
+"Cache-Control":
+"no-store, max-age=0",
+
+"X-NeuroTwin":
+"Observatorio-Global-2050",
+},
+}
+);
 }
